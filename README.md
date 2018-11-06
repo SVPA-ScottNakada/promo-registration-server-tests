@@ -1,0 +1,1 @@
+# promo-registration-server-tests
