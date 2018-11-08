@@ -1,7 +1,6 @@
 
-package com.promo.test.framework.registration_server.register;
+package com.promo.test.framework.registration_server;
 
-import com.promo.test.framework.registration_server.RegistrationServerRequestHelper;
 import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
 public class RegisterDeviceHelper extends RegistrationServerRequestHelper {
