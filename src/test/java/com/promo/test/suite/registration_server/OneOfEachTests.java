@@ -2,6 +2,7 @@
 package com.promo.test.suite.registration_server;
 
 import com.promo.test.framework.registration_server.DeleteDeviceHelper;
+import com.promo.test.framework.registration_server.HealthHelper;
 import com.promo.test.framework.registration_server.RegisterDeviceHelper;
 import com.promo.test.suite.BaseApiTest;
 
@@ -46,12 +47,22 @@ public class OneOfEachTests extends BaseApiTest {
         register.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
 
     }
-    
+
     @Test
     public void deleteDeviceTest() {
 
         DeleteDeviceHelper register = new DeleteDeviceHelper();
         register.addDeviceUserId(TEST_DUID);
+        register.send();
+
+        register.validateResponseCodeOk();
+
+    }
+
+    @Test
+    public void healthTest() {
+
+        HealthHelper register = new HealthHelper();
         register.send();
 
         register.validateResponseCodeOk();
