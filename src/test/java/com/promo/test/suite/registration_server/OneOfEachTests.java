@@ -1,7 +1,8 @@
 
 package com.promo.test.suite.registration_server;
 
-import com.promo.test.framework.registration_server.register.RegisterDeviceHelper;
+import com.promo.test.framework.registration_server.DeleteDeviceHelper;
+import com.promo.test.framework.registration_server.RegisterDeviceHelper;
 import com.promo.test.suite.BaseApiTest;
 
 import org.testng.annotations.Test;
@@ -43,6 +44,17 @@ public class OneOfEachTests extends BaseApiTest {
 
         register.validateResponseCode(422);
         register.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
+
+    }
+    
+    @Test
+    public void deleteDeviceTest() {
+
+        DeleteDeviceHelper register = new DeleteDeviceHelper();
+        register.addDeviceUserId(TEST_DUID);
+        register.send();
+
+        register.validateResponseCodeOk();
 
     }
 

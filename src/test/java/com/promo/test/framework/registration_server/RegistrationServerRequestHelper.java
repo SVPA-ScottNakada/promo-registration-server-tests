@@ -89,8 +89,6 @@ public class RegistrationServerRequestHelper {
                 .get(requestUri);
         // @formatter:on
 
-        requestResponse.then().log().ifValidationFails();
-        requestResponse.then().log().ifError();
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
             requestResponse.then().log().all();
         }
