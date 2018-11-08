@@ -35,6 +35,6 @@ public class CommonTestData {
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("testrail.project.id");
 
     public static final String TESTRAIL_SUITE_REGISTRATION_SERVER_ID =
-            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("testrail.suite.regportal.id");
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("testrail.suite.registration.server.id");
 
 }

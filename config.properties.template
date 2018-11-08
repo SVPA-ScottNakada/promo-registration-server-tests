@@ -19,7 +19,7 @@ testrail.user=
 testrail.user.id=
 testrail.password=
 testrail.project.id=
-testrail.suite.regportal.id=
+testrail.suite.registration.server.id=
 
 # ----------------------------------------------------------------------------------------------
 #                                       Registration Server Test Data
