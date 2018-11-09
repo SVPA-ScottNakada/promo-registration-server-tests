@@ -12,4 +12,7 @@ public class RegistrationServerTestData {
 
     public static final String REGISTRATION_SERVER_BASE_URI = REGISTRATION_SERVER_ENDPOINT + "promo/";
 
+    public static final String REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("registration.server.baseurl.is.production");
+
 }

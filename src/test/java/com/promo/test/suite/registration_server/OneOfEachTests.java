@@ -45,6 +45,7 @@ public class OneOfEachTests extends BaseApiTest {
 
         register.validateResponseCode(422);
         register.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
+        register.validateDebug("4005", "Missing member appId");
 
     }
 

@@ -23,6 +23,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.path.json.exception.JsonPathException;
 import io.restassured.response.Response;
 
 /**
@@ -36,6 +38,8 @@ public class RegistrationServerRequestHelper {
 
     protected Response requestResponse = null;
 
+    private JsonPath requestInJsonPath = null;
+
     private String appKeyForSignature = null;
 
     protected Map<String, String> requestParameterMap = new HashMap<String, String>();
@@ -43,6 +47,9 @@ public class RegistrationServerRequestHelper {
     protected Map<String, String> requestHeaderMap = new HashMap<String, String>();
 
     protected Map<String, String> requestBodyMap = new HashMap<String, String>();
+
+    protected final String REQUEST_URI_IS_PRODUCTION =
+            RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION;
 
     public RegistrationServerRequestHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
@@ -88,10 +95,12 @@ public class RegistrationServerRequestHelper {
                     .log().all()
                 .get(requestUri);
         // @formatter:on
+        setRequestAsJsonPath();
 
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
             requestResponse.then().log().all();
         }
+
     }
 
     /**
@@ -118,11 +127,20 @@ public class RegistrationServerRequestHelper {
                 .when()
                     .post(requestUri);
         // @formatter:on
+        setRequestAsJsonPath();
 
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
             requestResponse.then().log().all();
         }
 
+    }
+
+    private void setRequestAsJsonPath() {
+        try {
+            requestInJsonPath = new JsonPath(requestResponse.then().extract().jsonPath().prettify());
+        } catch (JsonPathException e) {
+            log.warn("---> Response is not JSON");
+        }
     }
 
     // Signature
@@ -197,23 +215,37 @@ public class RegistrationServerRequestHelper {
 
     /**
      * Validates that a path has an expected value in the response.
-     * The expected status code for the response is "200".
      *
      * @param pathToValidate string for the path to validate.
      * @param expectedValue string for the value to verify.
      */
     public void validateValue(String pathToValidate, String expectedValue) {
-        String testValue = "";
-        try {
-            testValue = requestResponse.jsonPath().get(pathToValidate).toString();
-        } catch (java.lang.NullPointerException e) {
-            logErrorToReport(MessageFormat.format("Failed getting value from path -{0}-", pathToValidate));
-        }
+        String testValue = requestInJsonPath.getString(pathToValidate);
         logToReport(MessageFormat.format("Validating -{0}-, expected value -{1}-, test value -{2}-", pathToValidate,
                 expectedValue, testValue));
+        assertThat(testValue, equalTo(expectedValue));
 
-        assertThat(expectedValue, equalTo(testValue));
+    }
 
+    public void validateDebug(String code, String message) {
+        if (isProduction()) {
+            validateValue(DEBUG_PATH, null);
+        } else {
+            validateValue(DEBUG_CODE_PATH, code);
+            validateValue(DEBUG_MESSAGE_PATH, message);
+        }
+    }
+
+    /**
+     * Returns true if the configuration property registration.server.baseurl.is.production is set to "yes",
+     * anything else returns false
+     */
+    public Boolean isProduction() {
+        if (REQUEST_URI_IS_PRODUCTION.equalsIgnoreCase("yes")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // --- HELPER'S GET AND SET --- ////
@@ -232,10 +264,6 @@ public class RegistrationServerRequestHelper {
 
     // LOG TO LOG4J AND REPORTER
 
-    private void logErrorToReport(String message) {
-        logToReport(message, Level.ERROR);
-    }
-
     public void logToReport(String message) {
         logToReport(message, Level.INFO);
     }
@@ -247,12 +275,15 @@ public class RegistrationServerRequestHelper {
 
     // @formatter:off
     // --- XML COMMON RESPONSE HEADER PATHS --- ////
-
-    public static final String DEBUG_PATH = "debug";
-    public static final String DEBUG_CODE_PATH = DEBUG_PATH + ".code";
-    public static final String DEBUG_MESSAGE_PATH = DEBUG_PATH + ".message";
+    
     public static final String ERROR_PATH = "error";
     public static final String ERROR_CODE_PATH = ERROR_PATH + ".code";
+
+    // Debug messages should be checked using validateDebug function 
+    private static final String DEBUG_PATH = "debug";
+    private static final String DEBUG_CODE_PATH = DEBUG_PATH + ".code";
+    private static final String DEBUG_MESSAGE_PATH = DEBUG_PATH + ".message";
+    
 
     // @formatter:on
 

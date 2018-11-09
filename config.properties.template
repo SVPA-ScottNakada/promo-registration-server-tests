@@ -28,6 +28,9 @@ testrail.suite.registration.server.id=
 # Base URL/Hostname for Registration Server API requests. E.g., https://dev.internet.sony.tv/
 registration.server.baseurl=
 
+# Set to yes if the base URL is in production
+registration.server.baseurl.is.production=
+
 # ----------------------------------------------------------------------------------------------
 #                                       Common Test Data
 # ----------------------------------------------------------------------------------------------
