@@ -40,9 +40,8 @@ public class RegisterEmailHelper extends RegistrationServerRequestHelper {
         addStringAsRequestBody("email", value);
     }
 
-    // boolean??
-    public void addOptIn(String value) {
-        addStringAsRequestBody("optIn", value);
+    public void addOptIn(Boolean value) {
+        addBooleanAsRequestBody("optIn", value);
     }
 
     public void addRegisterMeta(String value) {

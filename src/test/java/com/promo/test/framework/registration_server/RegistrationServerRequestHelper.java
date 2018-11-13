@@ -52,7 +52,7 @@ public class RegistrationServerRequestHelper {
 
     private Map<String, String> requestHeaderMap = new HashMap<String, String>();
 
-    private Map<String, String> requestBodyMap = new HashMap<String, String>();
+    private Map<String, Object> requestBodyMap = new HashMap<String, Object>();
 
     private final String REQUEST_URI_IS_PRODUCTION =
             RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION;
@@ -85,6 +85,10 @@ public class RegistrationServerRequestHelper {
     }
 
     public void addStringAsRequestBody(String key, String value) {
+        requestBodyMap.put(key, value);
+    }
+
+    public void addBooleanAsRequestBody(String key, Boolean value) {
         requestBodyMap.put(key, value);
     }
 
@@ -179,10 +183,10 @@ public class RegistrationServerRequestHelper {
      * @return Signature for specified input string.
      */
     protected String generateSignatureForRequest(String strForSig) {
-        if(!hasHeaderSignature){
+        if (!hasHeaderSignature) {
             return "";
         }
-        
+
         String signature = null;
 
         if (appKeyForSignature.isEmpty()) {
@@ -211,17 +215,25 @@ public class RegistrationServerRequestHelper {
         return unixTime;
     }
 
-    private String simpleMapToJsonString(Map<String, String> mapToConvert) {
+    private String simpleMapToJsonString(Map<String, Object> mapToConvert) {
 
         String resultString = "";
         Boolean firstParam = true;
-        for (Map.Entry<String, String> mapEntry : mapToConvert.entrySet()) {
+        for (Map.Entry<String, Object> mapEntry : mapToConvert.entrySet()) {
             if (firstParam) {
                 firstParam = false;
             } else {
                 resultString += ",";
             }
-            resultString += "\"" + mapEntry.getKey() + "\": \"" + mapEntry.getValue() + "\"";
+
+            String key = "\"" + mapEntry.getKey() + "\"";
+            String value = mapEntry.getValue().toString();
+
+            if (mapEntry.getValue().getClass().getTypeName().contains("String")) {
+                value = "\"" + value + "\"";
+            }
+
+            resultString += key + ": " + value;
         }
         resultString = "{" + resultString + "}";
 
