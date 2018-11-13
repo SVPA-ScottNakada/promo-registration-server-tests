@@ -13,6 +13,7 @@ public class HealthHelper extends RegistrationServerRequestHelper {
 
     public HealthHelper(String newUri) {
         super(newUri + API_COMMAND);
+        setHasHeaderSignature(false);
     }
 
     // Send request

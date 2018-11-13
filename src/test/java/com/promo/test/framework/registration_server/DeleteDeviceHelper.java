@@ -13,6 +13,7 @@ public class DeleteDeviceHelper extends RegistrationServerRequestHelper {
 
     public DeleteDeviceHelper(String newUri) {
         super(newUri + API_COMMAND);
+        setHasHeaderSignature(false);
     }
 
     // Send request

@@ -13,6 +13,7 @@ public class RegisterEmailHelper extends RegistrationServerRequestHelper {
 
     public RegisterEmailHelper(String newUri) {
         super(newUri + API_COMMAND);
+        setContentType("application/x-www-form-urlencoded");
     }
 
     // Send request

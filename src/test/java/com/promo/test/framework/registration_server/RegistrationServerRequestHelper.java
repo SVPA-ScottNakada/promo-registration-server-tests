@@ -1,7 +1,6 @@
 
 package com.promo.test.framework.registration_server;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -26,6 +25,7 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.path.json.exception.JsonPathException;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 /**
  * @author dalvarado
@@ -36,19 +36,25 @@ public class RegistrationServerRequestHelper {
 
     private String requestUri = null;
 
-    protected Response requestResponse = null;
+    private Response requestResponse = null;
+
+    private RequestSpecification requestSpecification = null;
+
+    private String contentType = "application/json";
+
+    private Boolean hasHeaderSignature = true;
 
     private JsonPath requestInJsonPath = null;
 
-    private String appKeyForSignature = null;
+    private String appKeyForSignature = "";
 
-    protected Map<String, String> requestParameterMap = new HashMap<String, String>();
+    private Map<String, String> requestParameterMap = new HashMap<String, String>();
 
-    protected Map<String, String> requestHeaderMap = new HashMap<String, String>();
+    private Map<String, String> requestHeaderMap = new HashMap<String, String>();
 
-    protected Map<String, String> requestBodyMap = new HashMap<String, String>();
+    private Map<String, String> requestBodyMap = new HashMap<String, String>();
 
-    protected final String REQUEST_URI_IS_PRODUCTION =
+    private final String REQUEST_URI_IS_PRODUCTION =
             RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION;
 
     public RegistrationServerRequestHelper() {
@@ -87,11 +93,13 @@ public class RegistrationServerRequestHelper {
      * Send the Get Request.
      */
     protected void sendGetRequest() {
+
+        setupRequestSpecification();
+
         log.info("\n---> send REQUEST:");
         // @formatter:off
-        requestResponse =
-                given()
-                    .params(requestParameterMap)
+        requestResponse = 
+                requestSpecification.given()
                     .log().all()
                 .get(requestUri);
         // @formatter:on
@@ -108,21 +116,12 @@ public class RegistrationServerRequestHelper {
      */
     protected void sendPostRequest() {
 
-        String bodyString = simpleMapToJsonString(requestBodyMap);
-        String timeStamp = getCurrentTimeAsTimeStamp();
-        String targetUrl = "/" + requestUri.replace(RegistrationServerTestData.REGISTRATION_SERVER_ENDPOINT, "");
-        String signature = generateSignatureForRequest(timeStamp + targetUrl + bodyString);
-
-        addStringAsRequestHeader("promo-signature", signature);
-        addStringAsRequestHeader("promo-ts", timeStamp);
+        setupRequestSpecification();
 
         log.info("\n---> send REQUEST:");
         // @formatter:off
         requestResponse =
-                given()
-                    .contentType("application/json")
-                    .headers(requestHeaderMap)
-                    .body(bodyString)
+                requestSpecification.given()
                     .log().all()
                 .when()
                     .post(requestUri);
@@ -131,6 +130,34 @@ public class RegistrationServerRequestHelper {
 
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
             requestResponse.then().log().all();
+        }
+
+    }
+
+    private void setupRequestSpecification() {
+
+        requestSpecification = RestAssured.with().contentType(contentType);
+
+        String bodyString = simpleMapToJsonString(requestBodyMap);
+        String timeStamp = getCurrentTimeAsTimeStamp();
+        String targetUrl = "/" + requestUri.replace(RegistrationServerTestData.REGISTRATION_SERVER_ENDPOINT, "");
+        String signature = generateSignatureForRequest(timeStamp + targetUrl + bodyString);
+
+        if (hasHeaderSignature) {
+            addStringAsRequestHeader("promo-signature", signature);
+            addStringAsRequestHeader("promo-ts", timeStamp);
+        }
+
+        if (!requestHeaderMap.isEmpty()) {
+            requestSpecification.headers(requestHeaderMap);
+        }
+
+        if (!requestBodyMap.isEmpty()) {
+            requestSpecification.body(bodyString);
+        }
+
+        if (!requestParameterMap.isEmpty()) {
+            requestSpecification.params(requestParameterMap);
         }
 
     }
@@ -152,6 +179,10 @@ public class RegistrationServerRequestHelper {
      * @return Signature for specified input string.
      */
     protected String generateSignatureForRequest(String strForSig) {
+        if(!hasHeaderSignature){
+            return "";
+        }
+        
         String signature = null;
 
         if (appKeyForSignature.isEmpty()) {
@@ -260,6 +291,14 @@ public class RegistrationServerRequestHelper {
 
     public void setAppKey(String key) {
         appKeyForSignature = key;
+    }
+
+    public void setContentType(String type) {
+        contentType = type;
+    }
+
+    public void setHasHeaderSignature(Boolean signature) {
+        hasHeaderSignature = signature;
     }
 
     // LOG TO LOG4J AND REPORTER
