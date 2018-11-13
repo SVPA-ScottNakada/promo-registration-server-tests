@@ -15,6 +15,8 @@ public class HealthHelper extends RegistrationServerRequestHelper {
         super(newUri + API_COMMAND);
     }
 
+    // Send request
+
     public void send() {
         sendGetRequest();
     }

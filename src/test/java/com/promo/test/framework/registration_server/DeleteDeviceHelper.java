@@ -15,9 +15,13 @@ public class DeleteDeviceHelper extends RegistrationServerRequestHelper {
         super(newUri + API_COMMAND);
     }
 
+    // Send request
+
     public void send() {
         sendGetRequest();
     }
+
+    // Add Parameters
 
     public void addDeviceUserId(String value) {
         addStringAsRequestParameter("duid", value);

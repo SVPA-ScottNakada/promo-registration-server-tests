@@ -3,15 +3,15 @@ package com.promo.test.framework.registration_server;
 
 import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
-public class RegisterDeviceHelper extends RegistrationServerRequestHelper {
+public class RedeemHelper extends RegistrationServerRequestHelper {
 
-    public static final String API_COMMAND = "register/device";
+    public static final String API_COMMAND = "redeem";
 
-    public RegisterDeviceHelper() {
+    public RedeemHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
     }
 
-    public RegisterDeviceHelper(String newUri) {
+    public RedeemHelper(String newUri) {
         super(newUri + API_COMMAND);
     }
 
@@ -41,6 +41,14 @@ public class RegisterDeviceHelper extends RegistrationServerRequestHelper {
 
     public void addModel(String value) {
         addStringAsRequestBody("model", value);
+    }
+
+    public void addEmail(String value) {
+        addStringAsRequestBody("email", value);
+    }
+
+    public void addPromoMeta(String value) {
+        addStringAsRequestBody("promoMeta", value);
     }
 
 }
