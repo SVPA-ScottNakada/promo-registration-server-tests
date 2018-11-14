@@ -71,23 +71,41 @@ public class RegistrationServerRequestHelper {
 
     //// --- REQUEST PARAMETERS, HEADERS, BODY --- ////
     /**
-     * Adds a pair of Strings as a parameter to be send with the Get request.
+     * Adds a pair of Strings as a parameter to be send with the request.
      *
-     * @param key string for the name of the parameter.
-     * @param value string for the value of the parameter.
+     * @param key string for the name.
+     * @param value string for the value.
      */
     public void addStringAsRequestParameter(String key, String value) {
         requestParameterMap.put(key, value);
     }
 
+    /**
+     * Adds a pair of Strings in the Header to be send with the request.
+     *
+     * @param key string for the name.
+     * @param value string for the value.
+     */
     public void addStringAsRequestHeader(String key, String value) {
         requestHeaderMap.put(key, value);
     }
 
+    /**
+     * Adds a pair of Strings in the Body to be send with the request.
+     *
+     * @param key string for the name.
+     * @param value string for the value.
+     */
     public void addStringAsRequestBody(String key, String value) {
         requestBodyMap.put(key, value);
     }
 
+    /**
+     * Adds a Boolean value in the Body to be send with the request.
+     *
+     * @param key string for the name.
+     * @param value string for the value.
+     */
     public void addBooleanAsRequestBody(String key, Boolean value) {
         requestBodyMap.put(key, value);
     }
@@ -102,7 +120,7 @@ public class RegistrationServerRequestHelper {
 
         log.info("\n---> send REQUEST:");
         // @formatter:off
-        requestResponse = 
+        requestResponse =
                 requestSpecification.given()
                     .log().all()
                 .get(requestUri);
@@ -141,23 +159,23 @@ public class RegistrationServerRequestHelper {
     private void setupRequestSpecification() {
 
         requestSpecification = RestAssured.with().contentType(contentType);
+        String bodyString = "";
 
-        String bodyString = simpleMapToJsonString(requestBodyMap);
-        String timeStamp = getCurrentTimeAsTimeStamp();
-        String targetUrl = "/" + requestUri.replace(RegistrationServerTestData.REGISTRATION_SERVER_ENDPOINT, "");
-        String signature = generateSignatureForRequest(timeStamp + targetUrl + bodyString);
+        if (!requestBodyMap.isEmpty()) {
+            bodyString = simpleMapToJsonString(requestBodyMap);
+            requestSpecification.body(bodyString);
+        }
 
         if (hasHeaderSignature) {
+            String timeStamp = getCurrentTimeAsTimeStamp();
+            String targetUrl = "/" + requestUri.replace(RegistrationServerTestData.REGISTRATION_SERVER_ENDPOINT, "");
+            String signature = generateSignatureForRequest(timeStamp + targetUrl + bodyString);
             addStringAsRequestHeader("promo-signature", signature);
             addStringAsRequestHeader("promo-ts", timeStamp);
         }
 
         if (!requestHeaderMap.isEmpty()) {
             requestSpecification.headers(requestHeaderMap);
-        }
-
-        if (!requestBodyMap.isEmpty()) {
-            requestSpecification.body(bodyString);
         }
 
         if (!requestParameterMap.isEmpty()) {
@@ -177,12 +195,12 @@ public class RegistrationServerRequestHelper {
     // Signature
 
     /**
-     * Generates the signature for the specified string using MD5 Hash.
+     * Generates the signature for the specified string using HmacSHA256.
      *
      * @param strForSig candidate string for generating the signature.
      * @return Signature for specified input string.
      */
-    protected String generateSignatureForRequest(String strForSig) {
+    private String generateSignatureForRequest(String strForSig) {
         if (!hasHeaderSignature) {
             return "";
         }
@@ -210,7 +228,7 @@ public class RegistrationServerRequestHelper {
         return signature;
     }
 
-    public static String getCurrentTimeAsTimeStamp() {
+    private static String getCurrentTimeAsTimeStamp() {
         String unixTime = Long.toString(System.currentTimeMillis() / 1000L);
         return unixTime;
     }
@@ -218,10 +236,9 @@ public class RegistrationServerRequestHelper {
     private String simpleMapToJsonString(Map<String, Object> mapToConvert) {
 
         String resultString = "";
-        Boolean firstParam = true;
         for (Map.Entry<String, Object> mapEntry : mapToConvert.entrySet()) {
-            if (firstParam) {
-                firstParam = false;
+            if (resultString.isEmpty()) {
+                // No comma
             } else {
                 resultString += ",";
             }
@@ -235,20 +252,27 @@ public class RegistrationServerRequestHelper {
 
             resultString += key + ": " + value;
         }
-        resultString = "{" + resultString + "}";
 
-        return resultString;
+        return "{" + resultString + "}";
 
     }
 
     // --- VALIDATIONS --- ////
+    /**
+     * Validates that the response's Status Code value is OK.
+     */
     public void validateResponseCodeOk() {
         validateResponseCode(HttpStatus.SC_OK);
     }
 
+    /**
+     * Validates that the response's Status Code value has an expected value.
+     *
+     * @param expectedCode integer for the value to verify.
+     */
     public void validateResponseCode(Integer expectedCode) {
         logToReport(MessageFormat.format("Validating response status code, expected value -{0}-", expectedCode));
-     // @formatter:off
+        // @formatter:off
         requestResponse.then()
                 .assertThat()
                     .statusCode(expectedCode);
@@ -270,6 +294,12 @@ public class RegistrationServerRequestHelper {
 
     }
 
+    /**
+     * Validates the debug code and message in the JSON response.
+     *
+     * @param code string for the debug code.
+     * @param message string for the debug message.
+     */
     public void validateDebug(String code, String message) {
         if (isProduction()) {
             validateValue(DEBUG_PATH, null);
@@ -301,16 +331,31 @@ public class RegistrationServerRequestHelper {
         requestUri = newUri;
     }
 
-    public void setAppKey(String key) {
-        appKeyForSignature = key;
+    /**
+     * Sets the app_key for the request's header signature.
+     *
+     * @param newKey string for the new app_key.
+     */
+    public void setAppKey(String newKey) {
+        appKeyForSignature = newKey;
     }
 
-    public void setContentType(String type) {
-        contentType = type;
+    /**
+     * Sets the Content-Type for the request.
+     *
+     * @param newType string for the new Content-Type.
+     */
+    public void setContentType(String newType) {
+        contentType = newType;
     }
 
-    public void setHasHeaderSignature(Boolean signature) {
-        hasHeaderSignature = signature;
+    /**
+     * Specifies if a request needs to send a signature in the header.
+     *
+     * @param hasSignature
+     */
+    public void setHasHeaderSignature(Boolean hasSignature) {
+        hasHeaderSignature = hasSignature;
     }
 
     // LOG TO LOG4J AND REPORTER
@@ -326,15 +371,15 @@ public class RegistrationServerRequestHelper {
 
     // @formatter:off
     // --- XML COMMON RESPONSE HEADER PATHS --- ////
-    
+
     public static final String ERROR_PATH = "error";
     public static final String ERROR_CODE_PATH = ERROR_PATH + ".code";
 
-    // Debug messages should be checked using validateDebug function 
+    // Debug messages should be checked using validateDebug function
     private static final String DEBUG_PATH = "debug";
     private static final String DEBUG_CODE_PATH = DEBUG_PATH + ".code";
     private static final String DEBUG_MESSAGE_PATH = DEBUG_PATH + ".message";
-    
+
 
     // @formatter:on
 
