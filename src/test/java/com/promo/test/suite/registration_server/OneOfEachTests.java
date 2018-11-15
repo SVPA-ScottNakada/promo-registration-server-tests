@@ -37,23 +37,6 @@ public class OneOfEachTests extends BaseApiTest {
 
     }
 
-    @Test(groups = {"SmokeTest", "NegativeTest"})
-    public void registerDeviceTestMissingAppId() {
-
-        RegisterDeviceHelper regDev = new RegisterDeviceHelper();
-        regDev.addApplicationVersion("0.1");
-        regDev.addDeviceUserId(TEST_DUID);
-        regDev.addLanguage("en");
-        regDev.addModel("some-tv");
-        regDev.setAppKey(TEST_APP_KEY);
-        regDev.send();
-
-        regDev.validateResponseCode(422);
-        regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member appId");
-
-    }
-
     @Test(groups = "SmokeTest")
     public void deleteDeviceTest() {
 
@@ -85,7 +68,7 @@ public class OneOfEachTests extends BaseApiTest {
         regEmail.addEmail(TEST_EMAIL);
         regEmail.addOptIn(true);
         regEmail.addRegisterMeta(
-                "https://api.erabu.sony.tv/f1bdee86d512265979ab627fcf2133235f6f9817/8ec3f875-c05b-43cb-bc5e-d66c8fc50d8c/items/6691");
+                "https://api.erabu.sony.tv/60bad103452303d5ec8e512ca6cec5de6121ea47/c14b51e9-fe30-4527-805a-126bcadd8273/items/6691");
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 

@@ -201,15 +201,13 @@ public class RegistrationServerRequestHelper {
      * @return Signature for specified input string.
      */
     private String generateSignatureForRequest(String strForSig) {
-        if (!hasHeaderSignature) {
+
+        if (appKeyForSignature.isEmpty()) {
+            log.warn("---> appKeyForSignature is empty");
             return "";
         }
 
         String signature = null;
-
-        if (appKeyForSignature.isEmpty()) {
-            log.warn("---> appKeyForSignature is empty");
-        }
 
         try {
             String secret = appKeyForSignature;
