@@ -6,6 +6,7 @@ import com.promo.test.framework.registration_server.RegisterDeviceHelper;
 import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 
 public class RedeemedTests extends BaseApiTest {
@@ -46,7 +47,7 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(422);
+        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
         redeemed.validateDebug("4005", "Missing member appId");
 
@@ -63,7 +64,7 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(422);
+        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
         redeemed.validateDebug("4005", "Missing member appVersion");
 
@@ -80,7 +81,7 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(422);
+        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
         redeemed.validateDebug("4005", "Missing member duid");
 
@@ -97,7 +98,7 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(422);
+        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
         redeemed.validateDebug("4005", "Missing member deviceToken");
 
@@ -114,7 +115,79 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.addDeviceToken(TEST_DEVTOKEN);
         redeemed.send();
 
-        redeemed.validateResponseCode(401);
+        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        redeemed.validateDebug("4001", "Invalid signature");
+
+    }
+
+    @TestData(id = "", description = "Invalid appId")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppIdTest() {
+
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId("ThisShouldNotWork");
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken(TEST_DEVTOKEN);
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        redeemed.validateDebug("4001", "Missing App key");
+
+    }
+
+    @TestData(id = "", description = "Invalid deviceToken pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidDeviceTokenPatternTest() {
+
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken("ThisShouldNotWork");
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        redeemed.validateDebug("4002", "Invalid pattern for deviceToken.");
+
+    }
+
+    @TestData(id = "", description = "Invalid deviceToken")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidDeviceTokenTest() {
+
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken("x10101111xx11fzz1b1101101d11cdf01c101gx1d001101f1fb111c0c111d1z1");
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        redeemed.validateDebug("4001", "Invalid signature");
+
+    }
+
+    @TestData(id = "", description = "Invalid app key")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppKeyTest() {
+
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken(TEST_DEVTOKEN);
+        redeemed.setAppKey("ThisShouldNotWork");
+        redeemed.send();
+
+        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
         redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
         redeemed.validateDebug("4001", "Invalid signature");
 

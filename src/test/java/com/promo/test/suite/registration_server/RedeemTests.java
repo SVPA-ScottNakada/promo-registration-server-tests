@@ -6,6 +6,7 @@ import com.promo.test.framework.registration_server.RegisterDeviceHelper;
 import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 
 public class RedeemTests extends BaseApiTest {
@@ -54,7 +55,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member appId");
 
@@ -74,7 +75,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member appVersion");
 
@@ -94,7 +95,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member duid");
 
@@ -114,7 +115,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member lang");
 
@@ -134,7 +135,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member model");
 
@@ -154,7 +155,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member email");
 
@@ -174,7 +175,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(422);
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
         redeem.validateDebug("4005", "Missing member promoMeta");
 
@@ -194,7 +195,172 @@ public class RedeemTests extends BaseApiTest {
         redeem.addPromoMeta(TEST_PROMOMETA);
         redeem.send();
 
-        redeem.validateResponseCode(401);
+        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        redeem.validateDebug("4001", "Invalid signature");
+
+    }
+
+    @TestData(id = "", description = "Invalid appId")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppIdTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId("ThisShouldNotWork");
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        redeem.validateDebug("4001", "Missing App key");
+
+    }
+
+    // TODO: Finish validations
+    @TestData(id = "", description = "Invalid duid")
+    @Test(groups = {"BrokenTest", "NegativeTest"})
+    public void invalidDuidTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId("ThisShouldNotWork");
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "", description = "Invalid language pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidLanguagePatternTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("eng");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        redeem.validateDebug("4002", "Invalid pattern for lang.");
+
+    }
+
+    // TODO: Finish validations
+    @TestData(id = "", description = "Invalid model")
+    @Test(groups = {"BrokenTest", "NegativeTest"})
+    public void invalidModelTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("ThisShouldNotWork");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "", description = "Invalid email pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidEmailPatternTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail("ThisShouldNotWork");
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        redeem.validateDebug("4002", "Invalid pattern for email.");
+
+    }
+
+    @TestData(id = "", description = "Invalid promoMeta pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidPromoMetaPatternTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta("ThisShouldNotWork");
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        redeem.validateDebug("4002", "Invalid pattern for promoMeta.");
+
+    }
+
+    @TestData(id = "", description = "Invalid promoMeta")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidPromoMetaTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta("https://api.erabu.sony.tv/ThisShouldNotWork/ThisWontWork/1234");
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4301");
+
+    }
+
+    @TestData(id = "", description = "Invalid app key")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppKeyTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey("ThisShouldNotWork");
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
         redeem.validateDebug("4001", "Invalid signature");
 

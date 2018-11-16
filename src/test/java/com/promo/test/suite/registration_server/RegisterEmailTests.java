@@ -6,6 +6,7 @@ import com.promo.test.framework.registration_server.RegisterEmailHelper;
 import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 
 public class RegisterEmailTests extends BaseApiTest {
@@ -52,7 +53,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member appId");
 
@@ -71,7 +72,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member appVersion");
 
@@ -90,7 +91,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member duid");
 
@@ -109,7 +110,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member email");
 
@@ -128,7 +129,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member optIn");
 
@@ -148,7 +149,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4002");
         regEmail.validateDebug("4002", "Invalid type for optIn. Expected boolean");
 
@@ -167,7 +168,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(422);
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member registerMeta");
 
@@ -186,7 +187,106 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.addRegisterMeta(TEST_REGMETA);
         regEmail.send();
 
-        regEmail.validateResponseCode(401);
+        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        regEmail.validateDebug("4001", "Invalid signature");
+
+    }
+
+    @TestData(id = "", description = "Invalid appId")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppIdTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId("ThisShouldNotWork");
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
+        regEmail.validateDebug("4001", "Missing App key");
+
+    }
+
+    @TestData(id = "", description = "Invalid email pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidEmailPatternTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail("ThisShouldNotWork");
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        regEmail.validateDebug("4002", "Invalid pattern for email.");
+
+    }
+
+    @TestData(id = "", description = "Invalid registerMeta pattern")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidRegisterMetaPatternTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta("ThisShouldNotWork");
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
+        regEmail.validateDebug("4002", "Invalid pattern for registerMeta.");
+
+    }
+
+    @TestData(id = "", description = "Invalid registerMeta ")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidRegisterMetaTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta("https://api.erabu.sony.tv/ThisShouldNotWork/ThisWontWork/1234");
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4301");
+
+    }
+
+    @TestData(id = "", description = "Invalid app key")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidAppKeyTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey("ThisShouldNotWork");
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
         regEmail.validateDebug("4001", "Invalid signature");
 
