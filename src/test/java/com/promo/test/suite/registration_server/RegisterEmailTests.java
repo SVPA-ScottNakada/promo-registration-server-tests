@@ -10,13 +10,13 @@ import org.testng.annotations.Test;
 
 public class RegisterEmailTests extends BaseApiTest {
 
-    public static final String TEST_DUID = "abcdefghi_mytest";
+    public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
-    public static final String TEST_APP = "postman";
+    public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
-    public static final String TEST_APP_KEY = "hogehoge";
+    public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
-    public static final String TEST_EMAIL = "this@email.com";
+    public static final String TEST_EMAIL = RegistrationServerTestData.EMAIL;
 
     public static final String TEST_REGMETA =
             "https://api.erabu.sony.tv/60bad103452303d5ec8e512ca6cec5de6121ea47/c14b51e9-fe30-4527-805a-126bcadd8273/items/6691";

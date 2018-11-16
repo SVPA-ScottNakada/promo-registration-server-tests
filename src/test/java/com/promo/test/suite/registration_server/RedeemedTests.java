@@ -10,11 +10,11 @@ import org.testng.annotations.Test;
 
 public class RedeemedTests extends BaseApiTest {
 
-    public static final String TEST_DUID = "abcdefghi_mytest";
+    public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
-    public static final String TEST_APP = "postman";
+    public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
-    public static final String TEST_APP_KEY = "hogehoge";
+    public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
     public static final String TEST_DEVTOKEN = "e80302132ee18faa4b8704293d15cdf06c191ge8d094501f4fb766c9c281d6a3"; // <--
                                                                                                                    // Gibberish

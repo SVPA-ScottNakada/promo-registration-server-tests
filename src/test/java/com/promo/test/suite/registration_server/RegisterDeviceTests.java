@@ -9,11 +9,11 @@ import org.testng.annotations.Test;
 
 public class RegisterDeviceTests extends BaseApiTest {
 
-    public static final String TEST_DUID = "abcdefghi_mytest";
+    public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
-    public static final String TEST_APP = "postman";
+    public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
-    public static final String TEST_APP_KEY = "hogehoge";
+    public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
     @TestData(id = "", description = "Required parameters")
     @Test(groups = "SmokeTest")

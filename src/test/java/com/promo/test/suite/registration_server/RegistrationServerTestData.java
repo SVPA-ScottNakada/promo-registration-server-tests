@@ -15,4 +15,14 @@ public class RegistrationServerTestData {
     public static final String REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("registration.server.baseurl.is.production");
 
+    // Test Data
+
+    public static final String DUID = "abcdefghi_mytest";
+
+    public static final String APP_NAME = "postman";
+
+    public static final String APP_KEY = "hogehoge";
+
+    public static final String EMAIL = "this@email.com";
+
 }

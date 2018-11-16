@@ -13,13 +13,13 @@ import org.testng.annotations.Test;
 
 public class OneOfEachTests extends BaseApiTest {
 
-    public static final String TEST_DUID = "abcdefghi_mytest";
+    public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
-    public static final String TEST_APP = "postman";
+    public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
-    public static final String TEST_APP_KEY = "hogehoge";
+    public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
-    public static final String TEST_EMAIL = "this@email.com";
+    public static final String TEST_EMAIL = RegistrationServerTestData.EMAIL;
 
     @Test(groups = "SmokeTest")
     public void registerDeviceTest() {
