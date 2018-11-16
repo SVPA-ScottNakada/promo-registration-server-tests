@@ -8,7 +8,7 @@ import com.promo.test.suite.BaseApiTest;
 
 import org.testng.annotations.Test;
 
-public class ReedemTests extends BaseApiTest {
+public class RedeemTests extends BaseApiTest {
 
     public static final String TEST_DUID = "abcdefghi_mytest";
 
