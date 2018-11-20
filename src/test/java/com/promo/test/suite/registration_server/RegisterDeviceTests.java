@@ -16,7 +16,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
-    @TestData(id = "", description = "Required parameters")
+    @TestData(id = "1526320", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
 
@@ -33,7 +33,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appId parameter")
+    @TestData(id = "1526321", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -51,7 +51,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appVersion parameter")
+    @TestData(id = "1526322", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -69,7 +69,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing duid parameter")
+    @TestData(id = "1526323", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -87,7 +87,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing lang parameter")
+    @TestData(id = "1526324", description = "Missing lang parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
 
@@ -105,7 +105,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing model parameter")
+    @TestData(id = "1526325", description = "Missing model parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
 
@@ -123,7 +123,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "No app key, invalid signature")
+    @TestData(id = "1526326", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -141,7 +141,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid appId")
+    @TestData(id = "1526327", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -160,7 +160,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid language pattern")
+    @TestData(id = "1526328", description = "Invalid language pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
 
@@ -179,7 +179,7 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid app key")
+    @TestData(id = "1526329", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

@@ -22,7 +22,7 @@ public class RegisterEmailTests extends BaseApiTest {
     public static final String TEST_REGMETA =
             "https://api.erabu.sony.tv/60bad103452303d5ec8e512ca6cec5de6121ea47/c14b51e9-fe30-4527-805a-126bcadd8273/items/6691";
 
-    @TestData(id = "", description = "Required parameters")
+    @TestData(id = "1526357", description = "Required parameters")
     @Test(groups = "BrokenTest")
     public void registerEmailTest() {
 
@@ -40,7 +40,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appId parameter")
+    @TestData(id = "1526358", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -59,7 +59,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appVersion parameter")
+    @TestData(id = "1526359", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -78,7 +78,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing duid parameter")
+    @TestData(id = "1526360", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -97,7 +97,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing email parameter")
+    @TestData(id = "1526361", description = "Missing email parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
 
@@ -116,7 +116,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing optIn parameter")
+    @TestData(id = "1526362", description = "Missing optIn parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingOptInTest() {
 
@@ -135,7 +135,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid optIn type")
+    @TestData(id = "1526363", description = "Invalid optIn type")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidOptInTypeTest() {
 
@@ -155,7 +155,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing registerMeta parameter")
+    @TestData(id = "1526364", description = "Missing registerMeta parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingRegisterMetaTest() {
 
@@ -174,7 +174,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "No app key, invalid signature")
+    @TestData(id = "1526365", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -193,7 +193,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid appId")
+    @TestData(id = "1526366", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -213,7 +213,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid email pattern")
+    @TestData(id = "1526367", description = "Invalid email pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
 
@@ -233,7 +233,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid registerMeta pattern")
+    @TestData(id = "1526368", description = "Invalid registerMeta pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaPatternTest() {
 
@@ -253,7 +253,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid registerMeta ")
+    @TestData(id = "1526369", description = "Invalid registerMeta ")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaTest() {
 
@@ -272,7 +272,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid app key")
+    @TestData(id = "1526370", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

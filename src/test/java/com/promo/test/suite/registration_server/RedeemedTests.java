@@ -20,7 +20,7 @@ public class RedeemedTests extends BaseApiTest {
     public static final String TEST_DEVTOKEN = "e80302132ee18faa4b8704293d15cdf06c191ge8d094501f4fb766c9c281d6a3"; // <--
                                                                                                                    // Gibberish
 
-    @TestData(id = "", description = "Required parameters")
+    @TestData(id = "1526330", description = "Required parameters")
     @Test(groups = "BrokenTest")
     public void requiredParametersTest() {
 
@@ -36,7 +36,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appId parameter")
+    @TestData(id = "1526331", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -53,7 +53,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appVersion parameter")
+    @TestData(id = "1526332", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -70,7 +70,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing duid parameter")
+    @TestData(id = "1526333", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -87,7 +87,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing deviceToken parameter")
+    @TestData(id = "1526334", description = "Missing deviceToken parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDeviceTokenTest() {
 
@@ -104,7 +104,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "No app key, invalid signature")
+    @TestData(id = "1526335", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -121,7 +121,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid appId")
+    @TestData(id = "1526336", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -139,7 +139,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid deviceToken pattern")
+    @TestData(id = "1526337", description = "Invalid deviceToken pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDeviceTokenPatternTest() {
 
@@ -157,7 +157,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid deviceToken")
+    @TestData(id = "1526338", description = "Invalid deviceToken")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDeviceTokenTest() {
 
@@ -175,7 +175,7 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid app key")
+    @TestData(id = "1526339", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

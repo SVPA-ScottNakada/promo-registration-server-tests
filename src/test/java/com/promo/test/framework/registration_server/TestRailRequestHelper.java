@@ -54,8 +54,6 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     private static final String SUITE_ID = CommonTestData.TESTRAIL_SUITE_REGISTRATION_SERVER_ID;
 
-    private static final String RUN_AUTOMATION_MILESTONE_ID = "11";
-
     private static String testRailRunName = null;
 
     private static String testRailRunCreationTime = null;
@@ -64,7 +62,6 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     public TestRailRequestHelper() {
         RestAssured.useRelaxedHTTPSValidation();
-
     }
 
     // This belongs to ISuiteListener and will execute before the Suite start
@@ -166,19 +163,19 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
                    .auth()
                        .preemptive()
                            .basic(USER, PASSWORD)
-                   .log().all()
+                   .log().ifValidationFails()
                .get(API_URL + getString);
        // @formatter:on
 
-        requestResponse.then().log().ifValidationFails();
         requestResponse.then().log().ifError();
-        if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
-            requestResponse.then().log().all();
-        }
+        requestResponse.then().assertThat().statusCode(HttpStatus.SC_OK);
 
     }
 
     private void sendPostRequest(String apiMethod, String jsonAsString) {
+
+        log.info("\n---> send REQUEST:");
+
         // @formatter:off
         requestResponse = 
                 given()
@@ -188,16 +185,12 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
                             .basic(USER, PASSWORD)
                     .contentType("application/json")
                     .body(jsonAsString)
+                    .log().ifValidationFails()
                 .when()
                     .post(API_URL + apiMethod);
         // @formatter:on
 
-        requestResponse.then().log().ifValidationFails();
         requestResponse.then().log().ifError();
-        if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
-            requestResponse.then().log().all();
-        }
-
         requestResponse.then().assertThat().statusCode(HttpStatus.SC_OK);
 
     }
@@ -228,8 +221,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         LocalDateTime createTime = LocalDateTime.now();
         testRailRunCreationTime = createTime.toString();
 
-        testRailRunName =
-                "Automated run for Registration Server (ID: " + PROJECT_ID + ", Suite " + SUITE_ID + ") at " + testRailRunCreationTime;
+        testRailRunName = "Automated run for Registration Server (ID: " + PROJECT_ID + ", Suite " + SUITE_ID + ") at "
+                + testRailRunCreationTime;
 
         // @formatter:off
         String jsonAsString = 
@@ -238,7 +231,6 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
                         + "\"name\": \"" + testRailRunName + "\","
                         + "\"description\": \"" + "Base Uri: " + RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI + "\","
                         + "\"assignedto_id\": " + USER_ID + "," 
-                        + "\"milestone_id\": " + RUN_AUTOMATION_MILESTONE_ID + ","
                         + "\"include_all\": true" 
                 + "}";
         // @formatter:on
@@ -264,7 +256,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         String timeForSearch = unixTimeFromTwoDaysAgo.toString();
 
         sendGetRequest("get_runs/" + PROJECT_ID + "&is_completed=0&created_by=" + USER_ID + "&suite_id=" + SUITE_ID
-                + "&created_after=" + timeForSearch + "&milestone_id=" + RUN_AUTOMATION_MILESTONE_ID);
+                + "&created_after=" + timeForSearch);
 
         String listOfRunsInResponse = getJsonPathString("id");
 

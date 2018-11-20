@@ -22,7 +22,7 @@ public class RedeemTests extends BaseApiTest {
     public static final String TEST_PROMOMETA =
             "https://api.erabu.sony.tv/f1bdee86d512265979ab627fcf2133235f6f9817/8ec3f875-c05b-43cb-bc5e-d66c8fc50d8c/items/6692";
 
-    @TestData(id = "", description = "Required parameters")
+    @TestData(id = "1526340", description = "Required parameters")
     @Test(groups = "BrokenTest")
     public void requiredParametersTest() {
 
@@ -41,7 +41,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appId parameter")
+    @TestData(id = "1526341", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -61,7 +61,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing appVersion parameter")
+    @TestData(id = "1526342", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -81,7 +81,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing duid parameter")
+    @TestData(id = "1526343", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -101,7 +101,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing lang parameter")
+    @TestData(id = "1526344", description = "Missing lang parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
 
@@ -121,7 +121,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing model parameter")
+    @TestData(id = "1526345", description = "Missing model parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
 
@@ -141,7 +141,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing email parameter")
+    @TestData(id = "1526346", description = "Missing email parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
 
@@ -161,7 +161,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Missing promoMeta parameter")
+    @TestData(id = "1526347", description = "Missing promoMeta parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingPromoMetaTest() {
 
@@ -181,7 +181,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "No app key, invalid signature")
+    @TestData(id = "1526348", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -201,7 +201,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid appId")
+    @TestData(id = "1526349", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -223,7 +223,7 @@ public class RedeemTests extends BaseApiTest {
     }
 
     // TODO: Finish validations
-    @TestData(id = "", description = "Invalid duid")
+    @TestData(id = "1526350", description = "Invalid duid")
     @Test(groups = {"BrokenTest", "NegativeTest"})
     public void invalidDuidTest() {
 
@@ -242,7 +242,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid language pattern")
+    @TestData(id = "1526351", description = "Invalid language pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
 
@@ -264,7 +264,7 @@ public class RedeemTests extends BaseApiTest {
     }
 
     // TODO: Finish validations
-    @TestData(id = "", description = "Invalid model")
+    @TestData(id = "1526352", description = "Invalid model")
     @Test(groups = {"BrokenTest", "NegativeTest"})
     public void invalidModelTest() {
 
@@ -283,7 +283,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid email pattern")
+    @TestData(id = "1526353", description = "Invalid email pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
 
@@ -304,7 +304,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid promoMeta pattern")
+    @TestData(id = "1526354", description = "Invalid promoMeta pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaPatternTest() {
 
@@ -325,7 +325,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid promoMeta")
+    @TestData(id = "1526355", description = "Invalid promoMeta")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaTest() {
 
@@ -345,7 +345,7 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Invalid app key")
+    @TestData(id = "1526356", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 
