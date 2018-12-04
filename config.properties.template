@@ -35,6 +35,19 @@ registration.server.baseurl.is.production=
 #                                       Common Test Data
 # ----------------------------------------------------------------------------------------------
 
+test.duid=
+test.duid.flow=
 
+test.app.name=
+test.app.key=
+
+test.email=
+test.email.second=
+
+test.regmeta=
+test.promometa.url=
+test.promometa.id.01=
+test.promometa.id.02=
+test.promometa.id.03=
 
 # ================================================================================================================
