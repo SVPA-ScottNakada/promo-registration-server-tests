@@ -39,4 +39,13 @@ public class RedeemedHelper extends RegistrationServerRequestHelper {
         addStringAsRequestParameter("deviceToken", value);
     }
 
+    // @formatter:off
+    // --- JSON RESPONSE PATHS --- ////
+
+    public static final String PROMOS = "promos";
+    public static final String PROMO_ID = PROMOS + ".promoId";
+    public static final String IS_REDEEMED_BY_USER = PROMOS + ".isRedeemedByUser";
+    public static final String REDEEM_DATE = PROMOS + ".redeemDate";
+
+    // @formatter:on
 }

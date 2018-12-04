@@ -48,4 +48,12 @@ public class RegisterEmailHelper extends RegistrationServerRequestHelper {
         addStringAsRequestBody("registerMeta", value);
     }
 
+    // @formatter:off
+    // --- JSON RESPONSE PATHS --- ////
+
+    public static final String DEVICE_STATE = "deviceState";
+    public static final String DEVICE_TOKEN = "deviceToken";
+
+    // @formatter:on
+
 }
