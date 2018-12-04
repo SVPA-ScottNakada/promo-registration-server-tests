@@ -32,6 +32,12 @@
 			<class name="com.promo.test.suite.registration_server.RedeemTests" />
 		</classes>
 	</test>
+	
+	<test name="Delete Device Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.DeleteDeviceTests" />
+		</classes>
+	</test>
 
 	<listeners>
 		<listener
