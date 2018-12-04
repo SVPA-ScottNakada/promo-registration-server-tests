@@ -19,11 +19,14 @@ public class RegisterEmailTests extends BaseApiTest {
 
     public static final String TEST_EMAIL = RegistrationServerTestData.EMAIL;
 
-    public static final String TEST_REGMETA =
-            "https://api.erabu.sony.tv/60bad103452303d5ec8e512ca6cec5de6121ea47/c14b51e9-fe30-4527-805a-126bcadd8273/items/6691";
+    public static final String TEST_SECOND_EMAIL = RegistrationServerTestData.SECOND_EMAIL;
+
+    public static final String TEST_REGMETA = RegistrationServerTestData.REGMETA;
+
+    public static String deviceToken = "";
 
     @TestData(id = "1526357", description = "Required parameters")
-    @Test(groups = "BrokenTest")
+    @Test(groups = "SmokeTest")
     public void registerEmailTest() {
 
         RegisterEmailHelper regEmail = new RegisterEmailHelper();
@@ -37,7 +40,34 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.send();
 
         regEmail.validateResponseCodeOk();
+        regEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
 
+        regEmail.logToReport("Saving value for the first deviceToken");
+        deviceToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+
+    }
+
+    @TestData(id = "1526449", description = "Register second email to same test duid")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
+    public void registerSecondEmailTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_SECOND_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCodeOk();
+        regEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
+
+        regEmail.logToReport("Saving value for the second deviceToken");
+        String secondDeviceToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+        Boolean differentTokens = !secondDeviceToken.equals(deviceToken);
+        regEmail.logResult(differentTokens, "Second deviceToken is different from the first -" + deviceToken + "-");
     }
 
     @TestData(id = "1526358", description = "Missing appId parameter")
@@ -117,7 +147,7 @@ public class RegisterEmailTests extends BaseApiTest {
     }
 
     @TestData(id = "1526362", description = "Missing optIn parameter")
-    @Test(groups = {"SmokeTest", "NegativeTest"})
+    @Test(groups = {"BrokenTest", "NegativeTest"})
     public void missingOptInTest() {
 
         RegisterEmailHelper regEmail = new RegisterEmailHelper();

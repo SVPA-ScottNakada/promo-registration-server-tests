@@ -2,7 +2,9 @@
 package com.promo.test.suite.registration_server;
 
 import com.promo.test.framework.registration_server.RedeemHelper;
+import com.promo.test.framework.registration_server.RedeemedHelper;
 import com.promo.test.framework.registration_server.RegisterDeviceHelper;
+import com.promo.test.framework.registration_server.RegisterEmailHelper;
 import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
@@ -19,11 +21,14 @@ public class RedeemTests extends BaseApiTest {
 
     public static final String TEST_EMAIL = RegistrationServerTestData.EMAIL;
 
-    public static final String TEST_PROMOMETA =
-            "https://api.erabu.sony.tv/f1bdee86d512265979ab627fcf2133235f6f9817/8ec3f875-c05b-43cb-bc5e-d66c8fc50d8c/items/6692";
+    public static final String TEST_REGMETA = RegistrationServerTestData.REGMETA;
+
+    public static final String TEST_PROMOMETA = RegistrationServerTestData.PROMOMETA_001;
+
+    public static final String TEST_PROMOMETA_ID = RegistrationServerTestData.PROMOMETA_ID_001;
 
     @TestData(id = "1526340", description = "Required parameters")
-    @Test(groups = "BrokenTest")
+    @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
 
         RedeemHelper redeem = new RedeemHelper();
@@ -38,6 +43,59 @@ public class RedeemTests extends BaseApiTest {
         redeem.send();
 
         redeem.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "1526447", description = "Validate redeem promo shows up in the redeemed call")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
+    public void validateRedeemTest() {
+        // We get the deviceToken
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        String testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+
+        // We validate that the promo appears
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken(testDevToken);
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCodeOk();
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.PROMO_ID);
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.IS_REDEEMED_BY_USER);
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
+
+    }
+
+    @TestData(id = "1526448", description = "Promo redeemed already")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
+    public void promoAlreadyRedeemedTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail(TEST_EMAIL);
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
+        redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
 
     }
 
