@@ -3,6 +3,9 @@ package com.promo.test.framework.registration_server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.not;
 
 import com.promo.test.suite.CommonTestData;
 import com.promo.test.suite.registration_server.RegistrationServerTestData;
@@ -161,6 +164,11 @@ public class RegistrationServerRequestHelper {
         requestSpecification = RestAssured.with().contentType(contentType);
         String bodyString = "";
 
+        if (!requestParameterMap.isEmpty()) {
+            requestSpecification.params(requestParameterMap);
+            bodyString = simpleMapToUrlParameterString(requestParameterMap);
+        }
+
         if (!requestBodyMap.isEmpty()) {
             bodyString = simpleMapToJsonString(requestBodyMap);
             requestSpecification.body(bodyString);
@@ -176,10 +184,6 @@ public class RegistrationServerRequestHelper {
 
         if (!requestHeaderMap.isEmpty()) {
             requestSpecification.headers(requestHeaderMap);
-        }
-
-        if (!requestParameterMap.isEmpty()) {
-            requestSpecification.params(requestParameterMap);
         }
 
     }
@@ -255,6 +259,24 @@ public class RegistrationServerRequestHelper {
 
     }
 
+    private String simpleMapToUrlParameterString(Map<String, String> mapToConvert) {
+
+        String resultString = "";
+        for (Map.Entry<String, String> mapEntry : mapToConvert.entrySet()) {
+            if (resultString.isEmpty()) {
+                // We add "?" instead of "&"
+                resultString = "?";
+            } else {
+                resultString += "&";
+            }
+
+            resultString += mapEntry.getKey() + "=" + mapEntry.getValue();
+        }
+
+        return resultString;
+
+    }
+
     // --- VALIDATIONS --- ////
     /**
      * Validates that the response's Status Code value is OK.
@@ -293,6 +315,22 @@ public class RegistrationServerRequestHelper {
     }
 
     /**
+     * Validates that a response's path value is not null or empty.
+     *
+     * @param pathToValidate string for the path to validate.
+     */
+    public void validateNotNullOrEmpty(String pathToValidate) {
+        logToReport(MessageFormat.format("Validating -{0}- not null or empty", pathToValidate));
+        String testValue = getPathValue(pathToValidate);
+
+        assertThat(testValue, notNullValue());
+        // When a path would have to return a null value the extract() function instead returns the string "null"
+        assertThat(testValue, not(equalTo("null")));
+        assertThat(testValue, not(isEmptyString()));
+
+    }
+
+    /**
      * Validates the debug code and message in the JSON response.
      *
      * @param code string for the debug code.
@@ -307,6 +345,16 @@ public class RegistrationServerRequestHelper {
         }
     }
 
+    public void logResult(Boolean result, String verificationMessage) {
+        if (result)
+            logToReport(MessageFormat.format("Verified \"{0}\"", verificationMessage));
+        else {
+            logErrorToReport(MessageFormat.format("Failed verification \"{0}\"", verificationMessage));
+            throw new RuntimeException(MessageFormat.format("Failed verification \"{0}\"", verificationMessage));
+        }
+
+    }
+
     /**
      * Returns true if the configuration property registration.server.baseurl.is.production is set to "yes",
      * anything else returns false
@@ -317,6 +365,19 @@ public class RegistrationServerRequestHelper {
         } else {
             return false;
         }
+    }
+
+    // --- RESPONSE'S PATH INFO METHODS --- ////
+    /**
+     * Returns the value of a path in the response.
+     *
+     * @param pathForValue string for the path.
+     * @return string with the extracted value.
+     */
+    public String getPathValue(String pathForValue) {
+        String testValue = requestInJsonPath.getString(pathForValue);
+        log.info(MessageFormat.format("---> For path -{0}- returning value -{1}-", pathForValue, testValue));
+        return testValue;
     }
 
     // --- HELPER'S GET AND SET --- ////
@@ -362,13 +423,17 @@ public class RegistrationServerRequestHelper {
         logToReport(message, Level.INFO);
     }
 
+    public void logErrorToReport(String message) {
+        logToReport(message, Level.ERROR);
+    }
+
     private void logToReport(String message, Level logLevel) {
         log.log(logLevel, "---> " + message);
         Reporter.log(message + ".");
     }
 
     // @formatter:off
-    // --- XML COMMON RESPONSE HEADER PATHS --- ////
+    // --- JSON COMMON RESPONSE HEADER PATHS --- ////
 
     public static final String ERROR_PATH = "error";
     public static final String ERROR_CODE_PATH = ERROR_PATH + ".code";
