@@ -288,7 +288,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     }
 
     private void addResultForCase(String caseId, String statusId, String comment) {
-        if (!ACTIVE.toLowerCase().contains("yes")) {
+        if (!ACTIVE.toLowerCase().contains("yes") || caseId.isEmpty()) {
             return;
         }
 
