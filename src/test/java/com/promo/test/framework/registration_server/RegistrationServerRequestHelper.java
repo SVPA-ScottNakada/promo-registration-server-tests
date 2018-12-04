@@ -3,6 +3,7 @@ package com.promo.test.framework.registration_server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.not;
@@ -19,6 +20,7 @@ import org.testng.Reporter;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.Mac;
@@ -315,6 +317,33 @@ public class RegistrationServerRequestHelper {
     }
 
     /**
+     * Validates that a value is present in one of the many possible instances of a path in the response.
+     *
+     * @param pathToValidate string for the path to validate.
+     * @param expectedValue string for the value to verify.
+     */
+    public void validateValueInList(String pathToValidate, Object expectedValue) {
+        List<Object> listOfValues = requestInJsonPath.getList(pathToValidate);
+        logToReport(MessageFormat.format("Validating -{0}- list of values, expected -{1}- in list -{2}-",
+                pathToValidate, expectedValue, listOfValues));
+        assertThat(listOfValues, hasItems(expectedValue));
+    }
+
+    /**
+     * Validates number of instances of a path in the response.
+     *
+     * @param pathToValidate string for the path to validate.
+     * @param expectedCount integer for expected count.
+     */
+    public void validatePathCount(String pathToValidate, Integer expectedCount) {
+        List<Object> listOfValues = requestInJsonPath.getList(pathToValidate);
+        Integer testCount = listOfValues.size();
+        logToReport(MessageFormat.format("Validating -{0}- list, expected count -{1}-, test count -{2}-",
+                pathToValidate, expectedCount, testCount));
+        assertThat(testCount, equalTo(expectedCount));
+    }
+
+    /**
      * Validates that a response's path value is not null or empty.
      *
      * @param pathToValidate string for the path to validate.
@@ -376,7 +405,7 @@ public class RegistrationServerRequestHelper {
      */
     public String getPathValue(String pathForValue) {
         String testValue = requestInJsonPath.getString(pathForValue);
-        log.info(MessageFormat.format("---> For path -{0}- returning value -{1}-", pathForValue, testValue));
+        logToReport(MessageFormat.format("For path -{0}- returning value -{1}-", pathForValue, testValue));
         return testValue;
     }
 
