@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Negative Test Suite">
+	<groups>
+		<run>
+			<exclude name="BrokenTest" />
+			<exclude name="NegativeTest" />
+			<include name="SmokeTest" />
+		</run>
+	</groups>
+
+	<test name="Register Device Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.RegisterDeviceTests" />
+		</classes>
+	</test>
+
+	<test name="Register Email Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.RegisterEmailTests" />
+		</classes>
+	</test>
+
+	<test name="Redeemed Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.RedeemedTests" />
+		</classes>
+	</test>
+
+	<test name="Redeem Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.RedeemTests" />
+		</classes>
+	</test>
+
+	<test name="Multiple promo flow test">
+		<classes>
+			<class
+				name="com.promo.test.suite.registration_server.MultiplePromoFlowTests" />
+		</classes>
+	</test>
+
+	<test name="Delete Device Tests">
+		<classes>
+			<class name="com.promo.test.suite.registration_server.DeleteDeviceTests" />
+		</classes>
+	</test>
+
+	<listeners>
+		<listener
+			class-name="com.promo.test.framework.registration_server.TestRailRequestHelper" />
+	</listeners>
+</suite>

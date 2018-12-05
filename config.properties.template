@@ -1,0 +1,53 @@
+# ==============================================================================================
+# ----------------------------------------------------------------------------------------------
+#                                       Api Request
+# ----------------------------------------------------------------------------------------------
+# To log all XML responses set to yes
+request.debug.log.api.call.response=
+
+# request Proxy
+request.proxy=
+request.proxy.port=
+
+# ----------------------------------------------------------------------------------------------
+#                                       TestRail Log Data
+# ----------------------------------------------------------------------------------------------
+
+testrail.active=
+testrail.api.url=
+testrail.user=
+testrail.user.id=
+testrail.password=
+testrail.project.id=
+testrail.suite.registration.server.id=
+
+# ----------------------------------------------------------------------------------------------
+#                                       Registration Server Test Data
+# ----------------------------------------------------------------------------------------------
+
+# Base URL/Hostname for Registration Server API requests. E.g., https://dev.internet.sony.tv/
+registration.server.baseurl=
+
+# Set to yes if the base URL is in production
+registration.server.baseurl.is.production=
+
+# ----------------------------------------------------------------------------------------------
+#                                       Common Test Data
+# ----------------------------------------------------------------------------------------------
+
+test.duid=
+test.duid.flow=
+
+test.app.name=
+test.app.key=
+
+test.email=
+test.email.second=
+
+test.regmeta=
+test.promometa.url=
+test.promometa.id.01=
+test.promometa.id.02=
+test.promometa.id.03=
+
+# ================================================================================================================
