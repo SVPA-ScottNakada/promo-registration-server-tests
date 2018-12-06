@@ -5,7 +5,7 @@ import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
 public class RedeemHelper extends RegistrationServerRequestHelper {
 
-    public static final String API_COMMAND = "redeem";
+    private static final String API_COMMAND = "redeem";
 
     public RedeemHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
