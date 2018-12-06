@@ -16,11 +16,15 @@ public class RedeemTests extends BaseApiTest {
 
     public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
+    public static final String TEST_DUID_SECOND = RegistrationServerTestData.DUID_02;
+
     public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
     public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
     public static final String TEST_EMAIL = RegistrationServerTestData.EMAIL;
+
+    public static final String TEST_SECOND_EMAIL = RegistrationServerTestData.SECOND_EMAIL;
 
     public static final String TEST_REGMETA = RegistrationServerTestData.REGMETA;
 
@@ -42,6 +46,18 @@ public class RedeemTests extends BaseApiTest {
         regDev.send();
         regDev.validateResponseCodeOk();
 
+        // make Sure Second Device Is Registered
+        RegisterDeviceHelper regDev02 = new RegisterDeviceHelper();
+        regDev02.logToReport("Make sure second Device is registered");
+        regDev02.addApplicationId(TEST_APP);
+        regDev02.addApplicationVersion("0.1");
+        regDev02.addDeviceUserId(TEST_DUID_SECOND);
+        regDev02.addLanguage("en");
+        regDev02.addModel("some-tv");
+        regDev02.setAppKey(TEST_APP_KEY);
+        regDev02.send();
+        regDev02.validateResponseCodeOk();
+
         // make Sure Email Is Registered
         RegisterEmailHelper regEmail = new RegisterEmailHelper();
         regEmail.logToReport("Make sure Email is registered");
@@ -54,6 +70,31 @@ public class RedeemTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
         regEmail.validateResponseCodeOk();
+
+        // make Sure Email Is Registered to Second Device
+        RegisterEmailHelper regEmail2ndDev = new RegisterEmailHelper();
+        regEmail2ndDev.logToReport("Make sure Email is registered to second device");
+        regEmail2ndDev.addApplicationId(TEST_APP);
+        regEmail2ndDev.addApplicationVersion("0.1");
+        regEmail2ndDev.addDeviceUserId(TEST_DUID_SECOND);
+        regEmail2ndDev.addEmail(TEST_EMAIL);
+        regEmail2ndDev.addOptIn(true);
+        regEmail2ndDev.addRegisterMeta(TEST_REGMETA);
+        regEmail2ndDev.setAppKey(TEST_APP_KEY);
+        regEmail2ndDev.send();
+        regEmail2ndDev.validateResponseCodeOk();
+
+        // make Sure Second Email Is Registered to First Device
+        RegisterEmailHelper reg2ndEmail = new RegisterEmailHelper();
+        reg2ndEmail.addApplicationId(TEST_APP);
+        reg2ndEmail.addApplicationVersion("0.1");
+        reg2ndEmail.addDeviceUserId(TEST_DUID);
+        reg2ndEmail.addEmail(TEST_SECOND_EMAIL);
+        reg2ndEmail.addOptIn(true);
+        reg2ndEmail.addRegisterMeta(TEST_REGMETA);
+        reg2ndEmail.setAppKey(TEST_APP_KEY);
+        reg2ndEmail.send();
+        reg2ndEmail.validateResponseCodeOk();
 
     }
 
@@ -73,6 +114,46 @@ public class RedeemTests extends BaseApiTest {
         redeem.send();
 
         redeem.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "1526735", description = "Redeem same promo and email for Second duid")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
+    public void samePromoAndEmailForSecondDuidTest() {
+
+        RedeemHelper redeemOn2ndDevice = new RedeemHelper();
+        redeemOn2ndDevice.addApplicationId(TEST_APP);
+        redeemOn2ndDevice.addApplicationVersion("0.1");
+        redeemOn2ndDevice.addDeviceUserId(TEST_DUID_SECOND);
+        redeemOn2ndDevice.addLanguage("en");
+        redeemOn2ndDevice.addModel("some-tv");
+        redeemOn2ndDevice.addEmail(TEST_EMAIL);
+        redeemOn2ndDevice.addPromoMeta(TEST_PROMOMETA);
+        redeemOn2ndDevice.setAppKey(TEST_APP_KEY);
+        redeemOn2ndDevice.send();
+
+        redeemOn2ndDevice.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "1526736", description = "Cant Redeem same promo and duid for Second Email")
+    @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
+    public void samePromoAndDuidForSecondEmailTest() {
+
+        RedeemHelper redeemWith2ndEmail = new RedeemHelper();
+        redeemWith2ndEmail.addApplicationId(TEST_APP);
+        redeemWith2ndEmail.addApplicationVersion("0.1");
+        redeemWith2ndEmail.addDeviceUserId(TEST_DUID);
+        redeemWith2ndEmail.addLanguage("en");
+        redeemWith2ndEmail.addModel("some-tv");
+        redeemWith2ndEmail.addEmail(TEST_SECOND_EMAIL);
+        redeemWith2ndEmail.addPromoMeta(TEST_PROMOMETA);
+        redeemWith2ndEmail.setAppKey(TEST_APP_KEY);
+        redeemWith2ndEmail.send();
+
+        redeemWith2ndEmail.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeemWith2ndEmail.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
+        redeemWith2ndEmail.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
 
     }
 
@@ -102,14 +183,49 @@ public class RedeemTests extends BaseApiTest {
         redeemed.send();
 
         redeemed.validateResponseCodeOk();
-        redeemed.validateNotNullOrEmpty(RedeemedHelper.PROMO_ID);
-        redeemed.validateNotNullOrEmpty(RedeemedHelper.IS_REDEEMED_BY_USER);
+        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID);
+        redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
+
+    }
+
+    @TestData(id = "1526737", description = "Validate redeem promo also shows up for Second email in the redeemed call")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"samePromoAndDuidForSecondEmailTest", "validateRedeemTest"},
+            alwaysRun = true)
+    public void Test() {
+        // We get the deviceToken
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_SECOND_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        String testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+
+        // We validate that the promo appears
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID);
+        redeemed.addDeviceToken(testDevToken);
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCodeOk();
+        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID);
+        redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, false);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
     }
 
     @TestData(id = "1526448", description = "Promo redeemed already")
-    @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
+    @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void promoAlreadyRedeemedTest() {
 
         RedeemHelper redeem = new RedeemHelper();
@@ -130,7 +246,7 @@ public class RedeemTests extends BaseApiTest {
     }
 
     @TestData(id = "1526732", description = "Redeem with Unregistered email")
-    @Test(groups = "SmokeTest")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
     public void unregisteredEmailTest() {
 
         RedeemHelper redeem = new RedeemHelper();
@@ -331,9 +447,8 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    // TODO: Finish validations
     @TestData(id = "1526350", description = "Invalid duid")
-    @Test(groups = {"BrokenTest", "NegativeTest"})
+    @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDuidTest() {
 
         RedeemHelper redeem = new RedeemHelper();
@@ -347,7 +462,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCodeOk();
+        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4202");
+        redeem.validateDebug("4202", "Device email not registered");
 
     }
 
@@ -369,26 +486,6 @@ public class RedeemTests extends BaseApiTest {
         redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
         redeem.validateDebug("4002", "Invalid pattern for lang.");
-
-    }
-
-    // TODO: Finish validations
-    @TestData(id = "1526352", description = "Invalid model")
-    @Test(groups = {"BrokenTest", "NegativeTest"})
-    public void invalidModelTest() {
-
-        RedeemHelper redeem = new RedeemHelper();
-        redeem.addApplicationId(TEST_APP);
-        redeem.addApplicationVersion("0.1");
-        redeem.addDeviceUserId(TEST_DUID);
-        redeem.addLanguage("en");
-        redeem.addModel("ThisShouldNotWork");
-        redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
-        redeem.setAppKey(TEST_APP_KEY);
-        redeem.send();
-
-        redeem.validateResponseCodeOk();
 
     }
 
