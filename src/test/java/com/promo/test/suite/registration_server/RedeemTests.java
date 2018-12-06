@@ -77,6 +77,8 @@ public class RedeemTests extends BaseApiTest {
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
     }
+    
+    
 
     @TestData(id = "1526448", description = "Promo redeemed already")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
@@ -96,6 +98,27 @@ public class RedeemTests extends BaseApiTest {
         redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
         redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
+
+    }
+    
+    @TestData(id = "1526732", description = "Redeem with unregistered email")
+    @Test(groups = "SmokeTest")
+    public void unregisteredEmailTest() {
+
+        RedeemHelper redeem = new RedeemHelper();
+        redeem.addApplicationId(TEST_APP);
+        redeem.addApplicationVersion("0.1");
+        redeem.addDeviceUserId(TEST_DUID);
+        redeem.addLanguage("en");
+        redeem.addModel("some-tv");
+        redeem.addEmail("thiswontwork_182@outlook.com");
+        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.setAppKey(TEST_APP_KEY);
+        redeem.send();
+
+        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4202");
+        redeem.validateDebug("4202", "Device email not registered");
 
     }
 
