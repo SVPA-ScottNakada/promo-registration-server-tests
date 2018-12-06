@@ -30,7 +30,12 @@ public class RegistrationServerTestData {
     public static final String SECOND_EMAIL =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.email.second");
 
-    public static final String REGMETA = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta");
+    public static final String REGMETA_URL = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta.url");
+
+    public static final String REGMETA_ID_001 =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta.id.01");
+
+    public static final String REGMETA = REGMETA_URL + REGMETA_ID_001;
 
     public static final String PROMOMETA_URL =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.url");

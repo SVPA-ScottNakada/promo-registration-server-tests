@@ -25,7 +25,7 @@ testrail.suite.registration.server.id=
 #                                       Registration Server Test Data
 # ----------------------------------------------------------------------------------------------
 
-# Base URL/Hostname for Registration Server API requests. E.g., https://dev.internet.sony.tv/
+# Base URL/Hostname for Registration Server API requests. E.g., https://promo.sometesturl.com/
 registration.server.baseurl=
 
 # Set to yes if the base URL is in production
@@ -44,7 +44,10 @@ test.app.key=
 test.email=
 test.email.second=
 
-test.regmeta=
+test.regmeta.url=
+test.regmeta.id.01=
+test.regmeta.id.02=
+
 test.promometa.url=
 test.promometa.id.01=
 test.promometa.id.02=
