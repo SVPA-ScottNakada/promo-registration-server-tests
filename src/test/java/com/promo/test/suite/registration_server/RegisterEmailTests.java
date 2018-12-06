@@ -14,6 +14,8 @@ public class RegisterEmailTests extends BaseApiTest {
 
     public static final String TEST_DUID = RegistrationServerTestData.DUID;
 
+    public static final String TEST_DUID_SECOND = RegistrationServerTestData.DUID_02;
+
     public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
     public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
@@ -28,6 +30,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     @BeforeClass(groups = "SmokeTest")
     public void makeSureDeviceIsRegistered() {
+        // make Sure Device Is Registered
         RegisterDeviceHelper regDev = new RegisterDeviceHelper();
         regDev.logToReport("Make sure Device is registered");
         regDev.addApplicationId(TEST_APP);
@@ -37,8 +40,19 @@ public class RegisterEmailTests extends BaseApiTest {
         regDev.addModel("some-tv");
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
-
         regDev.validateResponseCodeOk();
+
+        // make Sure Second Device Is Registered
+        RegisterDeviceHelper regDev02 = new RegisterDeviceHelper();
+        regDev02.logToReport("Make sure second Device is registered");
+        regDev02.addApplicationId(TEST_APP);
+        regDev02.addApplicationVersion("0.1");
+        regDev02.addDeviceUserId(TEST_DUID_SECOND);
+        regDev02.addLanguage("en");
+        regDev02.addModel("some-tv");
+        regDev02.setAppKey(TEST_APP_KEY);
+        regDev02.send();
+        regDev02.validateResponseCodeOk();
     }
 
     @TestData(id = "1526357", description = "Required parameters")
@@ -66,23 +80,41 @@ public class RegisterEmailTests extends BaseApiTest {
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerSecondEmailTest() {
 
-        RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.addApplicationId(TEST_APP);
-        regEmail.addApplicationVersion("0.1");
-        regEmail.addDeviceUserId(TEST_DUID);
-        regEmail.addEmail(TEST_SECOND_EMAIL);
-        regEmail.addOptIn(true);
-        regEmail.addRegisterMeta(TEST_REGMETA);
-        regEmail.setAppKey(TEST_APP_KEY);
-        regEmail.send();
+        RegisterEmailHelper reg2ndEmail = new RegisterEmailHelper();
+        reg2ndEmail.addApplicationId(TEST_APP);
+        reg2ndEmail.addApplicationVersion("0.1");
+        reg2ndEmail.addDeviceUserId(TEST_DUID);
+        reg2ndEmail.addEmail(TEST_SECOND_EMAIL);
+        reg2ndEmail.addOptIn(true);
+        reg2ndEmail.addRegisterMeta(TEST_REGMETA);
+        reg2ndEmail.setAppKey(TEST_APP_KEY);
+        reg2ndEmail.send();
 
-        regEmail.validateResponseCodeOk();
-        regEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
+        reg2ndEmail.validateResponseCodeOk();
+        reg2ndEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
 
-        regEmail.logToReport("Saving value for the second deviceToken");
-        String secondDeviceToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+        reg2ndEmail.logToReport("Saving value for the second deviceToken");
+        String secondDeviceToken = reg2ndEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
         Boolean differentTokens = !secondDeviceToken.equals(deviceToken);
-        regEmail.logResult(differentTokens, "Second deviceToken is different from the first -" + deviceToken + "-");
+        reg2ndEmail.logResult(differentTokens, "Second deviceToken is different from the first -" + deviceToken + "-");
+    }
+
+    @TestData(id = "", description = "Register email to second device")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
+    public void registerEmailToSecondDeviceTest() {
+
+        RegisterEmailHelper regEmail2ndDev = new RegisterEmailHelper();
+        regEmail2ndDev.addApplicationId(TEST_APP);
+        regEmail2ndDev.addApplicationVersion("0.1");
+        regEmail2ndDev.addDeviceUserId(TEST_DUID_SECOND);
+        regEmail2ndDev.addEmail(TEST_EMAIL);
+        regEmail2ndDev.addRegisterMeta(TEST_REGMETA);
+        regEmail2ndDev.setAppKey(TEST_APP_KEY);
+        regEmail2ndDev.send();
+
+        regEmail2ndDev.validateResponseCodeOk();
+        regEmail2ndDev.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
+
     }
 
     @TestData(id = "1526358", description = "Missing appId parameter")
@@ -236,6 +268,25 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
         regEmail.validateDebug("4001", "Missing App key");
+
+    }
+
+    @TestData(id = "1526733", description = "Invalid duid")
+    @Test(groups = {"SmokeTest", "NegativeTest"})
+    public void invalidDuidTest() {
+
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId("ThisShouldNotWork");
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+
+        regEmail.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4201");
+        regEmail.validateDebug("4201", "Device not found");
 
     }
 
