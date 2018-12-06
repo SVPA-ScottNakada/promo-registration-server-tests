@@ -9,6 +9,7 @@ import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
 import org.apache.http.HttpStatus;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class RedeemTests extends BaseApiTest {
@@ -26,6 +27,35 @@ public class RedeemTests extends BaseApiTest {
     public static final String TEST_PROMOMETA = RegistrationServerTestData.PROMOMETA_001;
 
     public static final String TEST_PROMOMETA_ID = RegistrationServerTestData.PROMOMETA_ID_001;
+
+    @BeforeClass(groups = "SmokeTest")
+    public void registerDeviceAndEmail() {
+        // make Sure Device Is Registered
+        RegisterDeviceHelper regDev = new RegisterDeviceHelper();
+        regDev.logToReport("Make sure Device is registered");
+        regDev.addApplicationId(TEST_APP);
+        regDev.addApplicationVersion("0.1");
+        regDev.addDeviceUserId(TEST_DUID);
+        regDev.addLanguage("en");
+        regDev.addModel("some-tv");
+        regDev.setAppKey(TEST_APP_KEY);
+        regDev.send();
+        regDev.validateResponseCodeOk();
+
+        // make Sure Email Is Registered
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.logToReport("Make sure Email is registered");
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+        regEmail.validateResponseCodeOk();
+
+    }
 
     @TestData(id = "1526340", description = "Required parameters")
     @Test(groups = "SmokeTest")
@@ -77,8 +107,6 @@ public class RedeemTests extends BaseApiTest {
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
     }
-    
-    
 
     @TestData(id = "1526448", description = "Promo redeemed already")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
@@ -100,8 +128,8 @@ public class RedeemTests extends BaseApiTest {
         redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
 
     }
-    
-    @TestData(id = "1526732", description = "Redeem with unregistered email")
+
+    @TestData(id = "1526732", description = "Redeem with Unregistered email")
     @Test(groups = "SmokeTest")
     public void unregisteredEmailTest() {
 

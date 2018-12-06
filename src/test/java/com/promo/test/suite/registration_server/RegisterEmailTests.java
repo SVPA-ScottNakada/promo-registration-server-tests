@@ -26,9 +26,10 @@ public class RegisterEmailTests extends BaseApiTest {
 
     public static String deviceToken = "";
 
-    @BeforeClass
+    @BeforeClass(groups = "SmokeTest")
     public void makeSureDeviceIsRegistered() {
         RegisterDeviceHelper regDev = new RegisterDeviceHelper();
+        regDev.logToReport("Make sure Device is registered");
         regDev.addApplicationId(TEST_APP);
         regDev.addApplicationVersion("0.1");
         regDev.addDeviceUserId(TEST_DUID);

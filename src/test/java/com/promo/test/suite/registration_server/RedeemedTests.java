@@ -8,6 +8,7 @@ import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
 import org.apache.http.HttpStatus;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class RedeemedTests extends BaseApiTest {
@@ -24,27 +25,41 @@ public class RedeemedTests extends BaseApiTest {
 
     public static String testDevToken = "";
 
+    @BeforeClass(groups = "SmokeTest")
     public void setDevToken() {
-        if (testDevToken.isEmpty()) {
-            RegisterEmailHelper regEmail = new RegisterEmailHelper();
-            regEmail.addApplicationId(TEST_APP);
-            regEmail.addApplicationVersion("0.1");
-            regEmail.addDeviceUserId(TEST_DUID);
-            regEmail.addEmail(TEST_EMAIL);
-            regEmail.addOptIn(true);
-            regEmail.addRegisterMeta(TEST_REGMETA);
-            regEmail.setAppKey(TEST_APP_KEY);
-            regEmail.send();
+        // make Sure Device Is Registered
+        RegisterDeviceHelper regDev = new RegisterDeviceHelper();
+        regDev.logToReport("Make sure Device is registered");
+        regDev.addApplicationId(TEST_APP);
+        regDev.addApplicationVersion("0.1");
+        regDev.addDeviceUserId(TEST_DUID);
+        regDev.addLanguage("en");
+        regDev.addModel("some-tv");
+        regDev.setAppKey(TEST_APP_KEY);
+        regDev.send();
+        regDev.validateResponseCodeOk();
 
-            regEmail.validateResponseCodeOk();
-            testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
-        }
+        // make Sure Email Is Registered
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.logToReport("Make sure Email is registered");
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+        regEmail.validateResponseCodeOk();
+
+        // get devToken
+        testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+
     }
 
     @TestData(id = "1526330", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -62,7 +77,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526331", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationVersion("0.1");
@@ -80,7 +94,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526332", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -98,7 +111,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526333", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -133,7 +145,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526335", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -151,7 +162,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526336", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId("ThisShouldNotWork");
@@ -206,7 +216,6 @@ public class RedeemedTests extends BaseApiTest {
     @TestData(id = "1526339", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);

@@ -88,7 +88,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     // This belongs to ITestListener and will execute before starting of Test set/batch
     public void onStart(ITestContext arg0) {
-
+        log.info(MessageFormat.format("\n >>>>>>>> TEST CLASS: {0} <<<<<<<< \n", arg0.getName().toUpperCase()));
     }
 
     // This belongs to ITestListener and will execute, once the Test set/batch is finished
@@ -104,6 +104,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
             return;
         }
         addResultForCase(testData.id(), TEST_RAIL_RESULT_PASSED, getReporterResultsAsString(arg0));
+
+        log.info("... Success!\n");
 
     }
 
@@ -127,6 +129,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         }
         addResultForCase(testData.id(), TEST_RAIL_RESULT_FAILED,
                 getReporterResultsAsString(arg0) + "\n " + arg0.getThrowable().getMessage());
+
+        log.info("... Failure.\n");
 
     }
 
