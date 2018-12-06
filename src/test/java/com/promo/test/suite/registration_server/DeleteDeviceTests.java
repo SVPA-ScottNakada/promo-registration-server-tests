@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 public class DeleteDeviceTests extends BaseApiTest {
 
     public static final String TEST_DUID = RegistrationServerTestData.DUID;
+    
+    public static final String TEST_DUID_SECOND = RegistrationServerTestData.DUID_02;
 
     public static final String TEST_APP = RegistrationServerTestData.APP_NAME;
 
@@ -23,6 +25,18 @@ public class DeleteDeviceTests extends BaseApiTest {
 
         DeleteDeviceHelper delDev = new DeleteDeviceHelper();
         delDev.addDeviceUserId(TEST_DUID);
+        delDev.send();
+
+        delDev.validateResponseCodeOk();
+
+    }
+    
+    @TestData(description = "Delete second test Device")
+    @Test(groups = "SmokeTest")
+    public void deleteSecondDeviceTest() {
+
+        DeleteDeviceHelper delDev = new DeleteDeviceHelper();
+        delDev.addDeviceUserId(TEST_DUID_SECOND);
         delDev.send();
 
         delDev.validateResponseCodeOk();
