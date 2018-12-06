@@ -35,7 +35,8 @@ registration.server.baseurl.is.production=
 #                                       Common Test Data
 # ----------------------------------------------------------------------------------------------
 
-test.duid=
+test.duid.01=
+test.duid.02=
 test.duid.flow=
 
 test.app.name=
