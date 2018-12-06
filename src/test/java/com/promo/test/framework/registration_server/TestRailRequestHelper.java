@@ -60,6 +60,16 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     private static String testRailRunId = null;
 
+    public static final String TEST_RAIL_RESULT_PASSED = "1";
+
+    public static final String TEST_RAIL_RESULT_BLOCKED = "2";
+
+    public static final String TEST_RAIL_RESULT_UNTESTED = "3";
+
+    public static final String TEST_RAIL_RESULT_RETEST = "4";
+
+    public static final String TEST_RAIL_RESULT_FAILED = "5";
+
     public TestRailRequestHelper() {
         RestAssured.useRelaxedHTTPSValidation();
     }
@@ -93,7 +103,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         if (null == testData) {
             return;
         }
-        addResultForCase(testData.id(), "1", getReporterResultsAsString(arg0));
+        addResultForCase(testData.id(), TEST_RAIL_RESULT_PASSED, getReporterResultsAsString(arg0));
 
     }
 
@@ -115,7 +125,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         if (null == testData) {
             return;
         }
-        addResultForCase(testData.id(), "5",
+        addResultForCase(testData.id(), TEST_RAIL_RESULT_FAILED,
                 getReporterResultsAsString(arg0) + "\n " + arg0.getThrowable().getMessage());
 
     }
