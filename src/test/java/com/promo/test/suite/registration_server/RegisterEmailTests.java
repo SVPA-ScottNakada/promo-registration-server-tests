@@ -7,6 +7,7 @@ import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
 import org.apache.http.HttpStatus;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class RegisterEmailTests extends BaseApiTest {
@@ -25,6 +26,20 @@ public class RegisterEmailTests extends BaseApiTest {
 
     public static String deviceToken = "";
 
+    @BeforeClass
+    public void makeSureDeviceIsRegistered() {
+        RegisterDeviceHelper regDev = new RegisterDeviceHelper();
+        regDev.addApplicationId(TEST_APP);
+        regDev.addApplicationVersion("0.1");
+        regDev.addDeviceUserId(TEST_DUID);
+        regDev.addLanguage("en");
+        regDev.addModel("some-tv");
+        regDev.setAppKey(TEST_APP_KEY);
+        regDev.send();
+
+        regDev.validateResponseCodeOk();
+    }
+
     @TestData(id = "1526357", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void registerEmailTest() {
@@ -34,7 +49,6 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.addApplicationVersion("0.1");
         regEmail.addDeviceUserId(TEST_DUID);
         regEmail.addEmail(TEST_EMAIL);
-        regEmail.addOptIn(true);
         regEmail.addRegisterMeta(TEST_REGMETA);
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
@@ -47,7 +61,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "1526449", description = "Register second email to same test duid")
+    @TestData(id = "1526449", description = "Register second email to same test duid, optional optIn = true")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerSecondEmailTest() {
 
@@ -143,25 +157,6 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
         regEmail.validateDebug("4005", "Missing member email");
-
-    }
-
-    @TestData(id = "1526362", description = "Missing optIn parameter")
-    @Test(groups = {"BrokenTest", "NegativeTest"})
-    public void missingOptInTest() {
-
-        RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.addApplicationId(TEST_APP);
-        regEmail.addApplicationVersion("0.1");
-        regEmail.addDeviceUserId(TEST_DUID);
-        regEmail.addEmail(TEST_EMAIL);
-        regEmail.addRegisterMeta(TEST_REGMETA);
-        regEmail.setAppKey(TEST_APP_KEY);
-        regEmail.send();
-
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
-        regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member optIn");
 
     }
 
