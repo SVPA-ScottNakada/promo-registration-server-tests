@@ -17,20 +17,33 @@ public class RegistrationServerTestData {
 
     // Test Data
 
-    public static final String DUID = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.duid");
+    // DUID
+    public static final String DUID = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.duid.01");
+
+    public static final String DUID_02 = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.duid.02");
 
     public static final String DUID_FLOW = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.duid.flow");
 
+    // APP
     public static final String APP_NAME = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.app.name");
 
     public static final String APP_KEY = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.app.key");
 
+    // EMAIL
     public static final String EMAIL = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.email");
 
     public static final String SECOND_EMAIL =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.email.second");
 
-    public static final String REGMETA = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta");
+    // REGMETA
+    public static final String REGMETA_URL = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta.url");
+
+    public static final String REGMETA_ID_001 =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.regmeta.id.01");
+
+    public static final String REGMETA = REGMETA_URL + REGMETA_ID_001;
+
+    // PROMOMETA
 
     public static final String PROMOMETA_URL =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.url");

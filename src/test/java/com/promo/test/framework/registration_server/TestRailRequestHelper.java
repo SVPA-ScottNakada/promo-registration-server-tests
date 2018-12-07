@@ -60,6 +60,16 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     private static String testRailRunId = null;
 
+    public static final String TEST_RAIL_RESULT_PASSED = "1";
+
+    public static final String TEST_RAIL_RESULT_BLOCKED = "2";
+
+    public static final String TEST_RAIL_RESULT_UNTESTED = "3";
+
+    public static final String TEST_RAIL_RESULT_RETEST = "4";
+
+    public static final String TEST_RAIL_RESULT_FAILED = "5";
+
     public TestRailRequestHelper() {
         RestAssured.useRelaxedHTTPSValidation();
     }
@@ -78,7 +88,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     // This belongs to ITestListener and will execute before starting of Test set/batch
     public void onStart(ITestContext arg0) {
-
+        log.info(MessageFormat.format("\n >>>>>>>> TEST CLASS: {0} <<<<<<<< \n", arg0.getName().toUpperCase()));
     }
 
     // This belongs to ITestListener and will execute, once the Test set/batch is finished
@@ -89,11 +99,13 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ITestListener and will execute only when the test is pass
     public void onTestSuccess(ITestResult arg0) {
 
+        log.info("... Success!\n");
+
         TestData testData = arg0.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestData.class);
         if (null == testData) {
             return;
         }
-        addResultForCase(testData.id(), "1", getReporterResultsAsString(arg0));
+        addResultForCase(testData.id(), TEST_RAIL_RESULT_PASSED, getReporterResultsAsString(arg0));
 
     }
 
@@ -111,11 +123,13 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ITestListener and will execute only on the event of fail test
     public void onTestFailure(ITestResult arg0) {
 
+        log.warn("... Failure.\n");
+
         TestData testData = arg0.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestData.class);
         if (null == testData) {
             return;
         }
-        addResultForCase(testData.id(), "5",
+        addResultForCase(testData.id(), TEST_RAIL_RESULT_FAILED,
                 getReporterResultsAsString(arg0) + "\n " + arg0.getThrowable().getMessage());
 
     }

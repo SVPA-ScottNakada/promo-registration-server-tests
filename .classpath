@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="src/test/resources/lib/commons-codec-1.9.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/lib/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="src/test/resources/lib/cpsuite-1.2.6.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/lib/groovy-2.4.6.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/lib/groovy-json-2.4.6.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/lib/groovy-xml-2.4.6.jar"/>

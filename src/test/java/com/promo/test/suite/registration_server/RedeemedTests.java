@@ -8,6 +8,7 @@ import com.promo.test.framework.utils.TestData;
 import com.promo.test.suite.BaseApiTest;
 
 import org.apache.http.HttpStatus;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class RedeemedTests extends BaseApiTest {
@@ -24,27 +25,56 @@ public class RedeemedTests extends BaseApiTest {
 
     public static String testDevToken = "";
 
+    @BeforeClass(groups = "SmokeTest")
     public void setDevToken() {
-        if (testDevToken.isEmpty()) {
-            RegisterEmailHelper regEmail = new RegisterEmailHelper();
-            regEmail.addApplicationId(TEST_APP);
-            regEmail.addApplicationVersion("0.1");
-            regEmail.addDeviceUserId(TEST_DUID);
-            regEmail.addEmail(TEST_EMAIL);
-            regEmail.addOptIn(true);
-            regEmail.addRegisterMeta(TEST_REGMETA);
-            regEmail.setAppKey(TEST_APP_KEY);
-            regEmail.send();
+        // make Sure Device Is Registered
+        RegisterDeviceHelper regDev = new RegisterDeviceHelper();
+        regDev.logToReport("Make sure Device is registered");
+        regDev.addApplicationId(TEST_APP);
+        regDev.addApplicationVersion("0.1");
+        regDev.addDeviceUserId(TEST_DUID);
+        regDev.addLanguage("en");
+        regDev.addModel("some-tv");
+        regDev.setAppKey(TEST_APP_KEY);
+        regDev.send();
+        regDev.validateResponseCodeOk();
 
-            regEmail.validateResponseCodeOk();
-            testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
-        }
+        // make Sure Email Is Registered
+        RegisterEmailHelper regEmail = new RegisterEmailHelper();
+        regEmail.logToReport("Make sure Email is registered");
+        regEmail.addApplicationId(TEST_APP);
+        regEmail.addApplicationVersion("0.1");
+        regEmail.addDeviceUserId(TEST_DUID);
+        regEmail.addEmail(TEST_EMAIL);
+        regEmail.addOptIn(true);
+        regEmail.addRegisterMeta(TEST_REGMETA);
+        regEmail.setAppKey(TEST_APP_KEY);
+        regEmail.send();
+        regEmail.validateResponseCodeOk();
+
+        // get devToken
+        testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * promos not null or empty
+     */
     @TestData(id = "1526330", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -59,10 +89,25 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appId"
+     */
     @TestData(id = "1526331", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationVersion("0.1");
@@ -77,10 +122,25 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appVersion"
+     */
     @TestData(id = "1526332", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -95,10 +155,25 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member duid"
+     */
     @TestData(id = "1526333", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -113,6 +188,21 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member deviceToken"
+     */
     @TestData(id = "1526334", description = "Missing deviceToken parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDeviceTokenTest() {
@@ -130,10 +220,26 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature Without the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526335", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);
@@ -148,10 +254,26 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = "ThisShouldNotWork"
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Missing App key"
+     */
     @TestData(id = "1526336", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId("ThisShouldNotWork");
@@ -167,6 +289,23 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = "ThisShouldNotWork"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for deviceToken."
+     */
     @TestData(id = "1526337", description = "Invalid deviceToken pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDeviceTokenPatternTest() {
@@ -185,28 +324,26 @@ public class RedeemedTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "1526338", description = "Invalid deviceToken")
-    @Test(groups = {"BrokenTest", "NegativeTest"})
-    public void invalidDeviceTokenTest() {
-
-        RedeemedHelper redeemed = new RedeemedHelper();
-        redeemed.addApplicationId(TEST_APP);
-        redeemed.addApplicationVersion("0.1");
-        redeemed.addDeviceUserId(TEST_DUID);
-        redeemed.addDeviceToken("x10101111xx11fzz1b1101101d11cdf01c101gx1d001101f1fb111c0c111d1z1");
-        redeemed.setAppKey(TEST_APP_KEY);
-        redeemed.send();
-
-        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
-        redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeemed.validateDebug("4001", "Invalid signature");
-
-    }
-
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using "ThisShouldNotWork" as the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526339", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
-        setDevToken();
 
         RedeemedHelper redeemed = new RedeemedHelper();
         redeemed.addApplicationId(TEST_APP);

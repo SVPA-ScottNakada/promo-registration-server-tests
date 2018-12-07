@@ -16,6 +16,20 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     public static final String TEST_APP_KEY = RegistrationServerTestData.APP_KEY;
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     */
     @TestData(id = "1526320", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
@@ -33,6 +47,22 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appId"
+     */
     @TestData(id = "1526321", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
@@ -51,6 +81,22 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appVersion"
+     */
     @TestData(id = "1526322", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
@@ -69,6 +115,22 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member duid"
+     */
     @TestData(id = "1526323", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
@@ -87,6 +149,22 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member lang"
+     */
     @TestData(id = "1526324", description = "Missing lang parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
@@ -105,6 +183,22 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member model"
+     */
     @TestData(id = "1526325", description = "Missing model parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
@@ -123,6 +217,23 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature Without the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526326", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
@@ -141,6 +252,23 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = "ThisShouldNotWork"
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Missing App key"
+     */
     @TestData(id = "1526327", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
@@ -160,6 +288,23 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "eng"
+     * model = "some-tv"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for lang."
+     */
     @TestData(id = "1526328", description = "Invalid language pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
@@ -179,6 +324,23 @@ public class RegisterDeviceTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/device post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * generate signature using "ThisShouldNotWork" as the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526329", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {

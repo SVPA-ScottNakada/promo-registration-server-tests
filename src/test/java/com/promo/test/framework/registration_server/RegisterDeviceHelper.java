@@ -5,7 +5,7 @@ import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
 public class RegisterDeviceHelper extends RegistrationServerRequestHelper {
 
-    public static final String API_COMMAND = "register/device";
+    private static final String API_COMMAND = "register/device";
 
     public RegisterDeviceHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
