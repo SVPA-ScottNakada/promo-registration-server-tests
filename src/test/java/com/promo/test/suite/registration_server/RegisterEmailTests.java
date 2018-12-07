@@ -55,6 +55,21 @@ public class RegisterEmailTests extends BaseApiTest {
         regDev02.validateResponseCodeOk();
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * deviceToken not null or empty
+     */
     @TestData(id = "1526357", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void registerEmailTest() {
@@ -76,6 +91,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Make a valid register/email using TEST_EMAIL
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_SECOND_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * deviceToken not null or empty
+     * deviceToken for TEST_SECOND_EMAIL is different from TEST_EMAIL
+     */
     @TestData(id = "1526449", description = "Register second email to same test duid, optional optIn = true")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerSecondEmailTest() {
@@ -99,7 +132,23 @@ public class RegisterEmailTests extends BaseApiTest {
         reg2ndEmail.logResult(differentTokens, "Second deviceToken is different from the first -" + deviceToken + "-");
     }
 
-    @TestData(id = "", description = "Register email to second device")
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526357", description = "Required parameters"
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID_SECOND
+     * email = TEST_EMAIL
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * deviceToken not null or empty
+     */
+    @TestData(id = "1526734", description = "Register email to second device")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerEmailToSecondDeviceTest() {
 
@@ -117,6 +166,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appId"
+     */
     @TestData(id = "1526358", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
@@ -136,6 +202,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appVersion"
+     */
     @TestData(id = "1526359", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
@@ -155,6 +238,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member duid"
+     */
     @TestData(id = "1526360", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
@@ -174,6 +274,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member email"
+     */
     @TestData(id = "1526361", description = "Missing email parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
@@ -193,6 +310,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = "true"
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid type for optIn. Expected boolean"
+     */
     @TestData(id = "1526363", description = "Invalid optIn type")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidOptInTypeTest() {
@@ -213,6 +348,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member registerMeta"
+     */
     @TestData(id = "1526364", description = "Missing registerMeta parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingRegisterMetaTest() {
@@ -232,6 +384,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature Without the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526365", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
@@ -251,6 +421,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = "ThisShouldNotWork"
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Missing App key"
+     */
     @TestData(id = "1526366", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
@@ -271,6 +459,23 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = "ThisShouldNotWork"
+     * email = TEST_EMAIL
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 400
+     * error code = "4201"
+     * debug code = "4201"
+     * debug message = "Device not found"
+     */
     @TestData(id = "1526733", description = "Invalid duid")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDuidTest() {
@@ -290,6 +495,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = "ThisShouldNotWork"
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for email."
+     */
     @TestData(id = "1526367", description = "Invalid email pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
@@ -310,6 +533,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = "ThisShouldNotWork"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for registerMeta."
+     */
     @TestData(id = "1526368", description = "Invalid registerMeta pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaPatternTest() {
@@ -330,6 +571,22 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = "https://api.erabu.sony.tv/ThisShouldNotWork/ThisWontWork/1234"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 500
+     * error code = "4301"
+     */
     @TestData(id = "1526369", description = "Invalid registerMeta ")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaTest() {
@@ -349,6 +606,24 @@ public class RegisterEmailTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send register/email post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * email = TEST_EMAIL
+     * optIn = true
+     * registerMeta = TEST_REGMETA
+     * generate signature using "ThisShouldNotWork" as the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526370", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {

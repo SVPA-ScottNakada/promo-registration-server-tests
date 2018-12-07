@@ -35,8 +35,8 @@ public class RedeemTests extends BaseApiTest {
     public static final String TEST_PROMOMETA_02 = RegistrationServerTestData.PROMOMETA_002;
 
     public static final String TEST_PROMOMETA_ID_02 = RegistrationServerTestData.PROMOMETA_ID_002;
-    
-    public String getDevToken(String duid, String email){
+
+    public String getDevToken(String duid, String email) {
         RegisterEmailHelper getToken = new RegisterEmailHelper();
         getToken.addApplicationId(TEST_APP);
         getToken.addApplicationVersion("0.1");
@@ -48,7 +48,7 @@ public class RedeemTests extends BaseApiTest {
         getToken.send();
 
         return getToken.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
-        
+
     }
 
     @BeforeClass(groups = "SmokeTest")
@@ -117,6 +117,22 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     */
     @TestData(id = "1526340", description = "Required parameters")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
@@ -136,6 +152,23 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526340", description = "Required parameters"
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID_SECOND
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA_02
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     */
     @TestData(id = "1526738", description = "Redeem Second Promo on Second duid")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void redeemSecondPromoOnSecondDuidTest() {
@@ -155,7 +188,26 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "", description = "Validate Second promo redeemed only shows up for Second duid")
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526738", description = "Redeem Second Promo on Second duid"
+     * Make a register/email call using TEST_DUID_SECOND and TEST_EMAIL to get device token.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID_SECOND
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * promos count = 1
+     * promoId = TEST_PROMOMETA_ID_02
+     * isRedeemedByUser = true
+     * redeemDate not null or empty
+     */
+    @TestData(id = "1526739", description = "Validate Second promo redeemed only shows up for Second duid")
     @Test(groups = "SmokeTest", dependsOnMethods = {"redeemSecondPromoOnSecondDuidTest"}, alwaysRun = true)
     public void validateSecondPromoOnSecondDeviceTest() {
         // We get the deviceToken
@@ -178,6 +230,23 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526739", description = "Validate Second promo redeemed only shows up for Second duid"
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID_SECOND
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     */
     @TestData(id = "1526735", description = "Redeem same promo and email for Second duid")
     @Test(groups = "SmokeTest", dependsOnMethods = {"validateSecondPromoOnSecondDeviceTest"}, alwaysRun = true)
     public void redeemSamePromoAndEmailForSecondDuidTest() {
@@ -197,6 +266,26 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526340", description = "Required parameters"
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_SECOND_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 400
+     * error code = "4501"
+     * debug code = "4501"
+     * debug message = "4501", "Promo redeemed already. PromoId: 'TEST_PROMOMETA_ID'"
+     */
     @TestData(id = "1526736", description = "Cant Redeem same promo and duid for Second Email")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void cantRedeemPromoAndDuidForSecondEmailTest() {
@@ -218,6 +307,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Make a valid "redeem" call for the TEST_EMAIL and TEST_DUID.
+     * (Run test case id = "1526340", description = "Required parameters")
+     * Make a "register/email" call to get a test deviceToken.
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * promos count = 1
+     * promoId = TEST_PROMOMETA_ID
+     * isRedeemedByUser = true
+     * redeemDate not null or empty
+     */
     @TestData(id = "1526447", description = "Validate redeem promo shows up in the redeemed call")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void validateRedeemTest() {
@@ -241,6 +349,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526736", description = "Cant Redeem same promo and duid for Second Email"
+     * Make a register/email call using TEST_DUID and TEST_SECOND_EMAIL to get device token.
+     * --Steps
+     * end redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * promos count = 1
+     * promoId = TEST_PROMOMETA_ID
+     * isRedeemedByUser = false
+     * redeemDate not null or empty
+     */
     @TestData(id = "1526737", description = "Validate redeem promo also shows up for Second email in the redeemed call")
     @Test(groups = "SmokeTest", dependsOnMethods = {"cantRedeemPromoAndDuidForSecondEmailTest", "validateRedeemTest"},
             alwaysRun = true)
@@ -265,6 +392,26 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526340", description = "Required parameters"
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 400
+     * error code = "4501"
+     * debug code = "4501"
+     * debug message = "Promo redeemed already. PromoId: 'TEST_PROMOMETA_ID'"
+     */
     @TestData(id = "1526448", description = "Promo redeemed already")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void promoAlreadyRedeemedTest() {
@@ -286,6 +433,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = "thiswontwork_182@outlook.com"
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 400
+     * error code = "4202"
+     * debug code = "4202"
+     * debug message = "Device email not registered"
+     */
     @TestData(id = "1526732", description = "Redeem with Unregistered email")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void unregisteredEmailTest() {
@@ -307,6 +473,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appId"
+     */
     @TestData(id = "1526341", description = "Missing appId parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
@@ -327,6 +511,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member appVersion"
+     */
     @TestData(id = "1526342", description = "Missing appVersion parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
@@ -347,6 +549,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member duid"
+     */
     @TestData(id = "1526343", description = "Missing duid parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
@@ -367,6 +587,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member lang"
+     */
     @TestData(id = "1526344", description = "Missing lang parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
@@ -387,6 +625,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member model"
+     */
     @TestData(id = "1526345", description = "Missing model parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
@@ -407,6 +663,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member email"
+     */
     @TestData(id = "1526346", description = "Missing email parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
@@ -427,6 +701,24 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4005"
+     * debug code = "4005"
+     * debug message = "Missing member promoMeta"
+     */
     @TestData(id = "1526347", description = "Missing promoMeta parameter")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingPromoMetaTest() {
@@ -447,6 +739,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature Without the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526348", description = "No app key, invalid signature")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
@@ -467,6 +778,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = "ThisShouldNotWork"
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Missing App key"
+     */
     @TestData(id = "1526349", description = "Invalid appId")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
@@ -488,6 +818,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = "ThisShouldNotWork"
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 400
+     * error code = "4202"
+     * debug code = "4202"
+     * debug message = "Device email not registered"
+     */
     @TestData(id = "1526350", description = "Invalid duid")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDuidTest() {
@@ -509,6 +858,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "eng"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for lang."
+     */
     @TestData(id = "1526351", description = "Invalid language pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
@@ -530,6 +898,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = "ThisShouldNotWork"
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for email."
+     */
     @TestData(id = "1526353", description = "Invalid email pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
@@ -551,6 +938,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = "ThisShouldNotWork"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 422
+     * error code = "4002"
+     * debug code = "4002"
+     * debug message = "Invalid pattern for promoMeta."
+     */
     @TestData(id = "1526354", description = "Invalid promoMeta pattern")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaPatternTest() {
@@ -572,6 +978,23 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = "https://api.erabu.sony.tv/ThisShouldNotWork/ThisWontWork/1234"
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 500
+     * error code = "4301"
+     */
     @TestData(id = "1526355", description = "Invalid promoMeta")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaTest() {
@@ -592,6 +1015,25 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test appId and appKey to generate signature.
+     * --Steps
+     * send redeem post request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = TEST_DUID
+     * lang = "en"
+     * model = "some-tv"
+     * email = TEST_EMAIL
+     * promoMeta = TEST_PROMOMETA
+     * generate signature using "ThisShouldNotWork" as the appKey
+     * --Expected Result
+     * http status code = 401
+     * error code = "4001"
+     * debug code = "4001"
+     * debug message = "Invalid signature"
+     */
     @TestData(id = "1526356", description = "Invalid app key")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
