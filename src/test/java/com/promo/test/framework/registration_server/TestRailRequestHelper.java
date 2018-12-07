@@ -99,13 +99,13 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ITestListener and will execute only when the test is pass
     public void onTestSuccess(ITestResult arg0) {
 
+        log.info("... Success!\n");
+
         TestData testData = arg0.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestData.class);
         if (null == testData) {
             return;
         }
         addResultForCase(testData.id(), TEST_RAIL_RESULT_PASSED, getReporterResultsAsString(arg0));
-
-        log.info("... Success!\n");
 
     }
 
@@ -123,14 +123,14 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ITestListener and will execute only on the event of fail test
     public void onTestFailure(ITestResult arg0) {
 
+        log.warn("... Failure.\n");
+
         TestData testData = arg0.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestData.class);
         if (null == testData) {
             return;
         }
         addResultForCase(testData.id(), TEST_RAIL_RESULT_FAILED,
                 getReporterResultsAsString(arg0) + "\n " + arg0.getThrowable().getMessage());
-
-        log.info("... Failure.\n");
 
     }
 
