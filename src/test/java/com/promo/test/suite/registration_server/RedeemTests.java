@@ -32,6 +32,25 @@ public class RedeemTests extends BaseApiTest {
 
     public static final String TEST_PROMOMETA_ID = RegistrationServerTestData.PROMOMETA_ID_001;
 
+    public static final String TEST_PROMOMETA_02 = RegistrationServerTestData.PROMOMETA_002;
+
+    public static final String TEST_PROMOMETA_ID_02 = RegistrationServerTestData.PROMOMETA_ID_002;
+    
+    public String getDevToken(String duid, String email){
+        RegisterEmailHelper getToken = new RegisterEmailHelper();
+        getToken.addApplicationId(TEST_APP);
+        getToken.addApplicationVersion("0.1");
+        getToken.addDeviceUserId(duid);
+        getToken.addEmail(email);
+        getToken.addOptIn(true);
+        getToken.addRegisterMeta(TEST_REGMETA);
+        getToken.setAppKey(TEST_APP_KEY);
+        getToken.send();
+
+        return getToken.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+        
+    }
+
     @BeforeClass(groups = "SmokeTest")
     public void registerDeviceAndEmail() {
         // make Sure Device Is Registered
@@ -58,7 +77,7 @@ public class RedeemTests extends BaseApiTest {
         regDev02.send();
         regDev02.validateResponseCodeOk();
 
-        // make Sure Email Is Registered
+        // make Sure First Email Is Registered to First Device
         RegisterEmailHelper regEmail = new RegisterEmailHelper();
         regEmail.logToReport("Make sure Email is registered");
         regEmail.addApplicationId(TEST_APP);
@@ -71,7 +90,7 @@ public class RedeemTests extends BaseApiTest {
         regEmail.send();
         regEmail.validateResponseCodeOk();
 
-        // make Sure Email Is Registered to Second Device
+        // make Sure First Email Is Registered to Second Device
         RegisterEmailHelper regEmail2ndDev = new RegisterEmailHelper();
         regEmail2ndDev.logToReport("Make sure Email is registered to second device");
         regEmail2ndDev.addApplicationId(TEST_APP);
@@ -117,9 +136,51 @@ public class RedeemTests extends BaseApiTest {
 
     }
 
-    @TestData(id = "1526735", description = "Redeem same promo and email for Second duid")
+    @TestData(id = "1526738", description = "Redeem Second Promo on Second duid")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
-    public void samePromoAndEmailForSecondDuidTest() {
+    public void redeemSecondPromoOnSecondDuidTest() {
+
+        RedeemHelper redeem2ndPromo = new RedeemHelper();
+        redeem2ndPromo.addApplicationId(TEST_APP);
+        redeem2ndPromo.addApplicationVersion("0.1");
+        redeem2ndPromo.addDeviceUserId(TEST_DUID_SECOND);
+        redeem2ndPromo.addLanguage("en");
+        redeem2ndPromo.addModel("some-tv");
+        redeem2ndPromo.addEmail(TEST_EMAIL);
+        redeem2ndPromo.addPromoMeta(TEST_PROMOMETA_02);
+        redeem2ndPromo.setAppKey(TEST_APP_KEY);
+        redeem2ndPromo.send();
+
+        redeem2ndPromo.validateResponseCodeOk();
+
+    }
+
+    @TestData(id = "", description = "Validate Second promo redeemed only shows up for Second duid")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"redeemSecondPromoOnSecondDuidTest"}, alwaysRun = true)
+    public void validateSecondPromoOnSecondDeviceTest() {
+        // We get the deviceToken
+        String testDevToken = getDevToken(TEST_DUID_SECOND, TEST_EMAIL);
+
+        // We validate that the promo appears
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId(TEST_DUID_SECOND);
+        redeemed.addDeviceToken(testDevToken);
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCodeOk();
+        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID_02);
+        redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
+
+    }
+
+    @TestData(id = "1526735", description = "Redeem same promo and email for Second duid")
+    @Test(groups = "SmokeTest", dependsOnMethods = {"validateSecondPromoOnSecondDeviceTest"}, alwaysRun = true)
+    public void redeemSamePromoAndEmailForSecondDuidTest() {
 
         RedeemHelper redeemOn2ndDevice = new RedeemHelper();
         redeemOn2ndDevice.addApplicationId(TEST_APP);
@@ -138,7 +199,7 @@ public class RedeemTests extends BaseApiTest {
 
     @TestData(id = "1526736", description = "Cant Redeem same promo and duid for Second Email")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
-    public void samePromoAndDuidForSecondEmailTest() {
+    public void cantRedeemPromoAndDuidForSecondEmailTest() {
 
         RedeemHelper redeemWith2ndEmail = new RedeemHelper();
         redeemWith2ndEmail.addApplicationId(TEST_APP);
@@ -161,17 +222,7 @@ public class RedeemTests extends BaseApiTest {
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void validateRedeemTest() {
         // We get the deviceToken
-        RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.addApplicationId(TEST_APP);
-        regEmail.addApplicationVersion("0.1");
-        regEmail.addDeviceUserId(TEST_DUID);
-        regEmail.addEmail(TEST_EMAIL);
-        regEmail.addOptIn(true);
-        regEmail.addRegisterMeta(TEST_REGMETA);
-        regEmail.setAppKey(TEST_APP_KEY);
-        regEmail.send();
-
-        String testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+        String testDevToken = getDevToken(TEST_DUID, TEST_EMAIL);
 
         // We validate that the promo appears
         RedeemedHelper redeemed = new RedeemedHelper();
@@ -191,21 +242,11 @@ public class RedeemTests extends BaseApiTest {
     }
 
     @TestData(id = "1526737", description = "Validate redeem promo also shows up for Second email in the redeemed call")
-    @Test(groups = "SmokeTest", dependsOnMethods = {"samePromoAndDuidForSecondEmailTest", "validateRedeemTest"},
+    @Test(groups = "SmokeTest", dependsOnMethods = {"cantRedeemPromoAndDuidForSecondEmailTest", "validateRedeemTest"},
             alwaysRun = true)
-    public void Test() {
+    public void validateSecondEmailRedeemTest() {
         // We get the deviceToken
-        RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.addApplicationId(TEST_APP);
-        regEmail.addApplicationVersion("0.1");
-        regEmail.addDeviceUserId(TEST_DUID);
-        regEmail.addEmail(TEST_SECOND_EMAIL);
-        regEmail.addOptIn(true);
-        regEmail.addRegisterMeta(TEST_REGMETA);
-        regEmail.setAppKey(TEST_APP_KEY);
-        regEmail.send();
-
-        String testDevToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
+        String testDevToken = getDevToken(TEST_DUID, TEST_SECOND_EMAIL);
 
         // We validate that the promo appears
         RedeemedHelper redeemed = new RedeemedHelper();
