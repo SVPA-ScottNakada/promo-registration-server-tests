@@ -365,7 +365,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos not null or empty
      * promos list count = 0
      */
-    @TestData(id = "1526338", description = "Invalid deviceToken")
+    @TestData(id = "1526338", description = "redeemed - Invalid deviceToken")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"validateThirdRedeemedTest"}, alwaysRun = true)
     public void invalidDeviceTokenTest() {
 
@@ -383,8 +383,43 @@ public class MultiplePromoFlowTests extends BaseApiTest {
 
     }
 
+    /**
+     * --Preconditions
+     * Have a valid test deviceToken.
+     * Have a valid test appId and appKey to generate signature.
+     * Run test case id = "1526458", description = "Check promo list for third redeemed promo"
+     * --Steps
+     * send redeemed get request using:
+     * appId = TEST_APP
+     * appVersion = "0.1"
+     * duid = "ThisShouldNotWork"
+     * deviceToken = TEST_DEV_TOKEN
+     * generate signature using the appKey
+     * --Expected Result
+     * http status code = 200
+     * promos not null or empty
+     * promos list count = 0
+     */
+    @TestData(id = "1526740", description = "redeemed - Invalid duid")
+    @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"validateThirdRedeemedTest"}, alwaysRun = true)
+    public void invalidDuidTest() {
+
+        RedeemedHelper redeemed = new RedeemedHelper();
+        redeemed.addApplicationId(TEST_APP);
+        redeemed.addApplicationVersion("0.1");
+        redeemed.addDeviceUserId("ThisShouldNotWork");
+        redeemed.addDeviceToken(deviceToken);
+        redeemed.setAppKey(TEST_APP_KEY);
+        redeemed.send();
+
+        redeemed.validateResponseCodeOk();
+        redeemed.validateNotNullOrEmpty(RedeemedHelper.PROMOS);
+        redeemed.validatePathCount(RedeemedHelper.PROMOS, 0);
+
+    }
+
     @TestData(description = "Delete Flow device")
-    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDeviceTokenTest"}, alwaysRun = true)
+    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDeviceTokenTest", "invalidDuidTest"}, alwaysRun = true)
     public void deleteFlowDeviceTest() {
 
         DeleteDeviceHelper delDev = new DeleteDeviceHelper();
