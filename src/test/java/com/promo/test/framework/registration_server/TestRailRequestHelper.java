@@ -254,8 +254,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         LocalDateTime createTime = LocalDateTime.now();
         testRailRunCreationTime = createTime.toString();
 
-        testRailRunName = "Automated " + suitName + " run for SSM (ID: " + PROJECT_ID + ", Suite " + SUITE_ID + ") at "
-                + testRailRunCreationTime;
+        testRailRunName = "Automated " + suitName + " run for Registration Server (ID: " + PROJECT_ID + ", Suite "
+                + SUITE_ID + ") at " + testRailRunCreationTime;
 
         // @formatter:off
         String jsonAsString = 
