@@ -28,13 +28,13 @@ public class RedeemTests extends BaseApiTest {
 
     public static final String TEST_REGMETA = RegistrationServerTestData.REGMETA;
 
-    public static final String TEST_PROMOMETA = RegistrationServerTestData.PROMOMETA_001;
+    public static final String TEST_PROMOMETA_URL_01 = RegistrationServerTestData.PROMOMETA_URL_001;
 
-    public static final String TEST_PROMOMETA_ID = RegistrationServerTestData.PROMOMETA_ID_001;
+    public static final String TEST_PROMOMETA_NAME_01 = RegistrationServerTestData.PROMOMETA_NAME_001;
 
-    public static final String TEST_PROMOMETA_02 = RegistrationServerTestData.PROMOMETA_002;
+    public static final String TEST_PROMOMETA_URL_02 = RegistrationServerTestData.PROMOMETA_URL_002;
 
-    public static final String TEST_PROMOMETA_ID_02 = RegistrationServerTestData.PROMOMETA_ID_002;
+    public static final String TEST_PROMOMETA_NAME_02 = RegistrationServerTestData.PROMOMETA_NAME_002;
 
     public String getDevToken(String duid, String email) {
         RegisterEmailHelper getToken = new RegisterEmailHelper();
@@ -144,7 +144,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -180,7 +180,7 @@ public class RedeemTests extends BaseApiTest {
         redeem2ndPromo.addLanguage("en");
         redeem2ndPromo.addModel("some-tv");
         redeem2ndPromo.addEmail(TEST_EMAIL);
-        redeem2ndPromo.addPromoMeta(TEST_PROMOMETA_02);
+        redeem2ndPromo.addPromoMeta(TEST_PROMOMETA_URL_02);
         redeem2ndPromo.setAppKey(TEST_APP_KEY);
         redeem2ndPromo.send();
 
@@ -224,7 +224,7 @@ public class RedeemTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID_02);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_02);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
@@ -258,7 +258,7 @@ public class RedeemTests extends BaseApiTest {
         redeemOn2ndDevice.addLanguage("en");
         redeemOn2ndDevice.addModel("some-tv");
         redeemOn2ndDevice.addEmail(TEST_EMAIL);
-        redeemOn2ndDevice.addPromoMeta(TEST_PROMOMETA);
+        redeemOn2ndDevice.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeemOn2ndDevice.setAppKey(TEST_APP_KEY);
         redeemOn2ndDevice.send();
 
@@ -297,13 +297,13 @@ public class RedeemTests extends BaseApiTest {
         redeemWith2ndEmail.addLanguage("en");
         redeemWith2ndEmail.addModel("some-tv");
         redeemWith2ndEmail.addEmail(TEST_SECOND_EMAIL);
-        redeemWith2ndEmail.addPromoMeta(TEST_PROMOMETA);
+        redeemWith2ndEmail.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeemWith2ndEmail.setAppKey(TEST_APP_KEY);
         redeemWith2ndEmail.send();
 
         redeemWith2ndEmail.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
         redeemWith2ndEmail.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
-        redeemWith2ndEmail.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
+        redeemWith2ndEmail.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
 
     }
 
@@ -343,7 +343,7 @@ public class RedeemTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_01);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
@@ -386,7 +386,7 @@ public class RedeemTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_01);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, false);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
@@ -423,13 +423,13 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
         redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
-        redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_ID + "'");
+        redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
 
     }
 
@@ -463,7 +463,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail("thiswontwork_182@outlook.com");
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -501,7 +501,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -539,7 +539,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -577,7 +577,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -615,7 +615,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addDeviceUserId(TEST_DUID);
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -653,7 +653,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addDeviceUserId(TEST_DUID);
         redeem.addLanguage("en");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -691,7 +691,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addDeviceUserId(TEST_DUID);
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -769,7 +769,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.send();
 
         redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
@@ -808,7 +808,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -848,7 +848,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -888,7 +888,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("eng");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -928,7 +928,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail("ThisShouldNotWork");
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -1045,7 +1045,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey("ThisShouldNotWork");
         redeem.send();
 
