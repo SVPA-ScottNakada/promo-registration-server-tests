@@ -4,9 +4,10 @@
 <suite name="Negative Test Suite">
 	<groups>
 		<run>
+			<include name="SmokeTest" />
 			<exclude name="BrokenTest" />
 			<exclude name="NegativeTest" />
-			<include name="SmokeTest" />
+			<exclude name="DeprecatedTest" />
 		</run>
 	</groups>
 

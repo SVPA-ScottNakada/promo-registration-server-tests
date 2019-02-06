@@ -366,7 +366,8 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos list count = 0
      */
     @TestData(id = "1526338", description = "redeemed - Invalid deviceToken")
-    @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"validateThirdRedeemedTest"}, alwaysRun = true)
+    @Test(groups = {"SmokeTest", "NegativeTest", "DeprecatedTest"}, dependsOnMethods = {"validateThirdRedeemedTest"},
+            alwaysRun = true)
     public void invalidDeviceTokenTest() {
 
         RedeemedHelper redeemed = new RedeemedHelper();
@@ -419,7 +420,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
     }
 
     @TestData(description = "Delete Flow device")
-    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDeviceTokenTest", "invalidDuidTest"}, alwaysRun = true)
+    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDuidTest"}, alwaysRun = true)
     public void deleteFlowDeviceTest() {
 
         DeleteDeviceHelper delDev = new DeleteDeviceHelper();
