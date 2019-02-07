@@ -57,10 +57,19 @@ public class RegistrationServerTestData {
     public static final String PROMOMETA_ID_003 =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.id.03");
 
-    public static final String PROMOMETA_001 = PROMOMETA_URL + PROMOMETA_ID_001;
+    public static final String PROMOMETA_NAME_001 =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.name.01");
 
-    public static final String PROMOMETA_002 = PROMOMETA_URL + PROMOMETA_ID_002;
+    public static final String PROMOMETA_NAME_002 =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.name.02");
 
-    public static final String PROMOMETA_003 = PROMOMETA_URL + PROMOMETA_ID_003;
+    public static final String PROMOMETA_NAME_003 =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("test.promometa.name.03");
+
+    public static final String PROMOMETA_URL_001 = PROMOMETA_URL + PROMOMETA_ID_001;
+
+    public static final String PROMOMETA_URL_002 = PROMOMETA_URL + PROMOMETA_ID_002;
+
+    public static final String PROMOMETA_URL_003 = PROMOMETA_URL + PROMOMETA_ID_003;
 
 }

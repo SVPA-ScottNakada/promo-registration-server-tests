@@ -4,8 +4,9 @@
 <suite name="Smoke Test Suite">
 	<groups>
 		<run>
-			<exclude name="BrokenTest" />
 			<include name="SmokeTest" />
+			<exclude name="BrokenTest" />
+			<exclude name="DeprecatedTest" />
 		</run>
 	</groups>
 

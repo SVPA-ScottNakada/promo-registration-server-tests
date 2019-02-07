@@ -23,11 +23,14 @@ import org.testng.Reporter;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
+import io.restassured.path.json.exception.JsonPathException;
 import io.restassured.response.Response;
 
 public class TestRailRequestHelper implements ITestListener, ISuiteListener, IInvokedMethodListener {
@@ -38,7 +41,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     protected Logger log = LogManager.getLogger(getClass());
 
-    protected Response requestResponse = null;
+    protected Response response = null;
 
     private static final String ACTIVE = CommonTestData.TESTRAIL_ACTIVE;
 
@@ -60,6 +63,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     private static String testRailRunId = null;
 
+    private static String suitName = "";
+
     public static final String TEST_RAIL_RESULT_PASSED = "1";
 
     public static final String TEST_RAIL_RESULT_BLOCKED = "2";
@@ -70,6 +75,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     public static final String TEST_RAIL_RESULT_FAILED = "5";
 
+    private static List<String> runTestCaseIds = new ArrayList<String>();
+
     public TestRailRequestHelper() {
         RestAssured.useRelaxedHTTPSValidation();
     }
@@ -77,13 +84,13 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ISuiteListener and will execute before the Suite start
     @Override
     public void onStart(ISuite arg0) {
-
+        suitName = arg0.getXmlSuite().getName();
     }
 
     // This belongs to ISuiteListener and will execute, once the Suite is finished
     @Override
     public void onFinish(ISuite arg0) {
-
+        cleanUpRunTestCaseIds();
     }
 
     // This belongs to ITestListener and will execute before starting of Test set/batch
@@ -167,31 +174,24 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // --- SEND REQUEST --- ////
 
     public void sendGetRequest(String getString) {
-
-        log.info("\n---> send REQUEST:");
-
        // @formatter:off
-       requestResponse = 
+       response = 
                given()
                    .header("Content-Type","application/json")
                    .auth()
                        .preemptive()
                            .basic(USER, PASSWORD)
-                   .log().ifValidationFails()
                .get(API_URL + getString);
        // @formatter:on
 
-        requestResponse.then().log().ifError();
-        requestResponse.then().assertThat().statusCode(HttpStatus.SC_OK);
+        response.then().log().ifError();
+        response.then().assertThat().statusCode(HttpStatus.SC_OK);
 
     }
 
     private void sendPostRequest(String apiMethod, String jsonAsString) {
-
-        log.info("\n---> send REQUEST:");
-
         // @formatter:off
-        requestResponse = 
+        response = 
                 given()
                     .header("Content-Type","application/json")
                     .auth()
@@ -199,23 +199,42 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
                             .basic(USER, PASSWORD)
                     .contentType("application/json")
                     .body(jsonAsString)
-                    .log().ifValidationFails()
                 .when()
                     .post(API_URL + apiMethod);
         // @formatter:on
 
-        requestResponse.then().log().ifError();
-        requestResponse.then().assertThat().statusCode(HttpStatus.SC_OK);
+        response.then().log().ifError();
+        response.then().assertThat().statusCode(HttpStatus.SC_OK);
 
     }
 
     // JSON PATH
     private String getJsonPathString(String path) {
-        JsonPath responseInJson = requestResponse.jsonPath();
+        JsonPath responseInJson = response.jsonPath();
         return responseInJson.getString(path);
     }
 
-    // TESTRAIL FUNCTIONS
+    private List<String> getJsonPathStringList(String path) {
+        JsonPath responseInJsonPath = null;
+        try {
+            responseInJsonPath = new JsonPath(response.then().extract().jsonPath().prettify());
+        } catch (JsonPathException e) {
+            log.warn("Response is not JSON");
+        }
+        return responseInJsonPath.getList(path);
+    }
+
+    private List<Integer> getJsonPathIntegerList(String path) {
+        JsonPath responseInJsonPath = null;
+        try {
+            responseInJsonPath = new JsonPath(response.then().extract().jsonPath().prettify());
+        } catch (JsonPathException e) {
+            log.warn("Response is not JSON");
+        }
+        return responseInJsonPath.getList(path);
+    }
+
+    // TESTRAIL FUNCTIONS, documentation found on http://docs.gurock.com/testrail-api2/start
 
     private void addRun() {
         // First if we have a testRailRunId we do nothing
@@ -235,8 +254,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         LocalDateTime createTime = LocalDateTime.now();
         testRailRunCreationTime = createTime.toString();
 
-        testRailRunName = "Automated run for Registration Server (ID: " + PROJECT_ID + ", Suite " + SUITE_ID + ") at "
-                + testRailRunCreationTime;
+        testRailRunName = "Automated " + suitName + " run for Registration Server (ID: " + PROJECT_ID + ", Suite "
+                + SUITE_ID + ") at " + testRailRunCreationTime;
 
         // @formatter:off
         String jsonAsString = 
@@ -257,13 +276,6 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     }
 
-    public String getRunInfoAsString(String runId) {
-
-        sendGetRequest("get_run/" + runId);
-        return requestResponse.asString();
-
-    }
-
     private String getLastOpenRunId() {
 
         Long unixTimeFromTwoDaysAgo = Instant.now().getEpochSecond() - (60 * 60 * 48);
@@ -272,15 +284,11 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         sendGetRequest("get_runs/" + PROJECT_ID + "&is_completed=0&created_by=" + USER_ID + "&suite_id=" + SUITE_ID
                 + "&created_after=" + timeForSearch);
 
-        String listOfRunsInResponse = getJsonPathString("id");
-
-        listOfRunsInResponse = listOfRunsInResponse.replace("[", "").replaceAll("]", "");
-
-        List<String> newList = Arrays.asList(listOfRunsInResponse.split("\\s*,\\s*"));
+        List<Integer> listOfRunsInResponse = getJsonPathIntegerList("id");
 
         Integer maxIdNumber = 0;
 
-        for (String value : newList) {
+        for (Integer value : listOfRunsInResponse) {
             Integer valueInInt = 0;
             try {
                 valueInInt = Integer.valueOf(value);
@@ -296,12 +304,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     }
 
-    public void validateCase(String caseId) {
-        String getString = "get_case/" + caseId;
-        sendGetRequest(getString);
-    }
-
     private void addResultForCase(String caseId, String statusId, String comment) {
+
         if (!ACTIVE.toLowerCase().contains("yes") || caseId.isEmpty()) {
             return;
         }
@@ -319,12 +323,57 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         // @formatter:on
         log.info(MessageFormat.format("---> adding result for test case {0}: {1}", caseId, jsonAsString));
         sendPostRequest("add_result_for_case/" + testRailRunId + "/" + caseId, jsonAsString);
+        runTestCaseIds.add(caseId);
+
     }
 
-    public String getSuite(String suiteId) {
-        sendGetRequest("get_suite/" + suiteId);
-        return requestResponse.asString();
+    private void cleanUpRunTestCaseIds() {
 
+        // If no test case was executed we do nothing
+        if (!ACTIVE.toLowerCase().contains("yes") || runTestCaseIds.size() == 0) {
+            return;
+        }
+
+        // We make sure to have a valid testRailRunId to clean up
+        if (null == testRailRunId) {
+            testRailRunId = getLastOpenRunId();
+        }
+
+        if (testRailRunId.equals("0")) {
+            log.warn("---> Didn't find valid open RunId");
+            return;
+        }
+
+        // get_results_for_run, helps us get the test Run id's in the latest test run
+        // these ids are not the same as the test case's ids
+        String getString = "get_results_for_run/" + testRailRunId;
+        sendGetRequest(getString);
+        List<String> testResultsRunIds = getJsonPathStringList("test_id");
+
+        // We remove duplicate test case's results
+        Set<String> hs1 = new LinkedHashSet<>(testResultsRunIds);
+        List<String> noDuplicateResultsRunIds = new ArrayList<>(hs1);
+
+        // We only clean up the Run if the number of test results match the number of test cases executed
+        Integer totalTestRailRunResults = noDuplicateResultsRunIds.size();
+        Integer totalSuiteExecutedTestCases = runTestCaseIds.size();
+        if (totalTestRailRunResults != totalSuiteExecutedTestCases) {
+            log.warn("---> Number of test cases didn't match in clean up: TestRail -" + totalTestRailRunResults
+                    + "-, Suite -" + totalSuiteExecutedTestCases + "-");
+            return;
+        }
+
+        // update_run, we only include in the Run the test cases that were executed
+        String postString = "update_run/" + testRailRunId;
+        // @formatter:off
+        String jsonAsString = 
+                "{" 
+                        + "\"include_all\": false" + "," 
+                        + "\"case_ids\": " + runTestCaseIds
+                + "}";
+        // @formatter:on
+        sendPostRequest(postString, jsonAsString);
+        log.info("---> TestRail run cleanup complete");
     }
 
 }

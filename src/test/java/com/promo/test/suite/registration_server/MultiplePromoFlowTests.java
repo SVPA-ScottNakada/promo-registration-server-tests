@@ -25,17 +25,17 @@ public class MultiplePromoFlowTests extends BaseApiTest {
 
     public static String deviceToken = "";
 
-    public static final String TEST_PROMOMETA_01 = RegistrationServerTestData.PROMOMETA_001;
+    public static final String TEST_PROMOMETA_URL_01 = RegistrationServerTestData.PROMOMETA_URL_001;
 
-    public static final String TEST_PROMOMETA_ID_01 = RegistrationServerTestData.PROMOMETA_ID_001;
+    public static final String TEST_PROMOMETA_NAME_01 = RegistrationServerTestData.PROMOMETA_NAME_001;
 
-    public static final String TEST_PROMOMETA_02 = RegistrationServerTestData.PROMOMETA_002;
+    public static final String TEST_PROMOMETA_URL_02 = RegistrationServerTestData.PROMOMETA_URL_002;
 
-    public static final String TEST_PROMOMETA_ID_02 = RegistrationServerTestData.PROMOMETA_ID_002;
+    public static final String TEST_PROMOMETA_NAME_02 = RegistrationServerTestData.PROMOMETA_NAME_002;
 
-    public static final String TEST_PROMOMETA_03 = RegistrationServerTestData.PROMOMETA_003;
+    public static final String TEST_PROMOMETA_URL_03 = RegistrationServerTestData.PROMOMETA_URL_003;
 
-    public static final String TEST_PROMOMETA_ID_03 = RegistrationServerTestData.PROMOMETA_ID_003;
+    public static final String TEST_PROMOMETA_NAME_03 = RegistrationServerTestData.PROMOMETA_NAME_003;
 
     /**
      * --Preconditions
@@ -167,7 +167,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA_01);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -206,7 +206,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID_01);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_01);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
 
@@ -239,7 +239,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA_02);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_02);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -276,7 +276,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 2);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID_02);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_02);
 
     }
 
@@ -307,7 +307,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
         redeem.addLanguage("en");
         redeem.addModel("some-tv");
         redeem.addEmail(TEST_EMAIL);
-        redeem.addPromoMeta(TEST_PROMOMETA_03);
+        redeem.addPromoMeta(TEST_PROMOMETA_URL_03);
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
@@ -344,7 +344,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
 
         redeemed.validateResponseCodeOk();
         redeemed.validatePathCount(RedeemedHelper.PROMOS, 3);
-        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_ID_03);
+        redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_03);
 
     }
 
@@ -366,7 +366,8 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos list count = 0
      */
     @TestData(id = "1526338", description = "redeemed - Invalid deviceToken")
-    @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"validateThirdRedeemedTest"}, alwaysRun = true)
+    @Test(groups = {"SmokeTest", "NegativeTest", "DeprecatedTest"}, dependsOnMethods = {"validateThirdRedeemedTest"},
+            alwaysRun = true)
     public void invalidDeviceTokenTest() {
 
         RedeemedHelper redeemed = new RedeemedHelper();
@@ -419,7 +420,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
     }
 
     @TestData(description = "Delete Flow device")
-    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDeviceTokenTest", "invalidDuidTest"}, alwaysRun = true)
+    @Test(groups = "SmokeTest", dependsOnMethods = {"invalidDuidTest"}, alwaysRun = true)
     public void deleteFlowDeviceTest() {
 
         DeleteDeviceHelper delDev = new DeleteDeviceHelper();

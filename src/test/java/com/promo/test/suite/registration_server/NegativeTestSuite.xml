@@ -4,8 +4,9 @@
 <suite name="Negative Test Suite">
 	<groups>
 		<run>
-			<exclude name="BrokenTest" />
 			<include name="NegativeTest" />
+			<exclude name="BrokenTest" />
+			<exclude name="DeprecatedTest" />
 		</run>
 	</groups>
 
