@@ -133,7 +133,7 @@ public class RedeemTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526340", description = "Required parameters")
+    @TestData(id = "1526340", description = "Required parameters, expected status code = 200")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
 
@@ -169,7 +169,7 @@ public class RedeemTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526738", description = "Redeem Second Promo on Second duid")
+    @TestData(id = "1526738", description = "Redeem Second Promo on Second duid, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void redeemSecondPromoOnSecondDuidTest() {
 
@@ -207,7 +207,7 @@ public class RedeemTests extends BaseApiTest {
      * isRedeemedByUser = true
      * redeemDate not null or empty
      */
-    @TestData(id = "1526739", description = "Validate Second promo redeemed only shows up for Second duid")
+    @TestData(id = "1526739", description = "Validate Second promo redeemed only shows up for Second duid, expected promos count = 1")
     @Test(groups = "SmokeTest", dependsOnMethods = {"redeemSecondPromoOnSecondDuidTest"}, alwaysRun = true)
     public void validateSecondPromoOnSecondDeviceTest() {
         // We get the deviceToken
@@ -247,7 +247,7 @@ public class RedeemTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526735", description = "Redeem same promo and email for Second duid")
+    @TestData(id = "1526735", description = "Redeem same promo and email for Second duid, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"validateSecondPromoOnSecondDeviceTest"}, alwaysRun = true)
     public void redeemSamePromoAndEmailForSecondDuidTest() {
 
@@ -286,7 +286,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4501"
      * debug message = "4501", "Promo redeemed already. PromoId: 'TEST_PROMOMETA_ID'"
      */
-    @TestData(id = "1526736", description = "Cant Redeem same promo and duid for Second Email")
+    @TestData(id = "1526736", description = "Cant redeem same promo and duid for Second Email, expected error code = 4501")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void cantRedeemPromoAndDuidForSecondEmailTest() {
 
@@ -326,7 +326,7 @@ public class RedeemTests extends BaseApiTest {
      * isRedeemedByUser = true
      * redeemDate not null or empty
      */
-    @TestData(id = "1526447", description = "Validate redeem promo shows up in the redeemed call")
+    @TestData(id = "1526447", description = "Validate redeem promo shows up in the redeemed call, expected promos count = 1")
     @Test(groups = "SmokeTest", dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void validateRedeemTest() {
         // We get the deviceToken
@@ -368,7 +368,7 @@ public class RedeemTests extends BaseApiTest {
      * isRedeemedByUser = false
      * redeemDate not null or empty
      */
-    @TestData(id = "1526737", description = "Validate redeem promo also shows up for Second email in the redeemed call")
+    @TestData(id = "1526737", description = "Validate redeem promo also shows up for Second email in the redeemed call, expected promos count = 1")
     @Test(groups = "SmokeTest", dependsOnMethods = {"cantRedeemPromoAndDuidForSecondEmailTest", "validateRedeemTest"},
             alwaysRun = true)
     public void validateSecondEmailRedeemTest() {
@@ -412,7 +412,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4501"
      * debug message = "Promo redeemed already. PromoId: 'TEST_PROMOMETA_ID'"
      */
-    @TestData(id = "1526448", description = "Promo redeemed already")
+    @TestData(id = "1526448", description = "Promo redeemed already, expected error code = 4501")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"requiredParametersTest"}, alwaysRun = true)
     public void promoAlreadyRedeemedTest() {
 
@@ -452,7 +452,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4202"
      * debug message = "Device email not registered"
      */
-    @TestData(id = "1526732", description = "Redeem with Unregistered email")
+    @TestData(id = "1526732", description = "Redeem with Unregistered email, expected error code = 4202")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void unregisteredEmailTest() {
 
@@ -491,7 +491,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appId"
      */
-    @TestData(id = "1526341", description = "Missing appId parameter")
+    @TestData(id = "1526341", description = "Missing appId parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -529,7 +529,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appVersion"
      */
-    @TestData(id = "1526342", description = "Missing appVersion parameter")
+    @TestData(id = "1526342", description = "Missing appVersion parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -567,7 +567,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member duid"
      */
-    @TestData(id = "1526343", description = "Missing duid parameter")
+    @TestData(id = "1526343", description = "Missing duid parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -605,7 +605,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member lang"
      */
-    @TestData(id = "1526344", description = "Missing lang parameter")
+    @TestData(id = "1526344", description = "Missing lang parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
 
@@ -643,7 +643,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member model"
      */
-    @TestData(id = "1526345", description = "Missing model parameter")
+    @TestData(id = "1526345", description = "Missing model parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
 
@@ -681,7 +681,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member email"
      */
-    @TestData(id = "1526346", description = "Missing email parameter")
+    @TestData(id = "1526346", description = "Missing email parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
 
@@ -719,7 +719,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member promoMeta"
      */
-    @TestData(id = "1526347", description = "Missing promoMeta parameter")
+    @TestData(id = "1526347", description = "Missing promoMeta parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingPromoMetaTest() {
 
@@ -758,7 +758,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526348", description = "No app key, invalid signature")
+    @TestData(id = "1526348", description = "No app key, invalid signature, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -797,7 +797,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Missing App key"
      */
-    @TestData(id = "1526349", description = "Invalid appId")
+    @TestData(id = "1526349", description = "Invalid appId, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -837,7 +837,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4202"
      * debug message = "Device email not registered"
      */
-    @TestData(id = "1526350", description = "Invalid duid")
+    @TestData(id = "1526350", description = "Invalid duid, expected error code = 4202")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDuidTest() {
 
@@ -877,7 +877,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for lang."
      */
-    @TestData(id = "1526351", description = "Invalid language pattern")
+    @TestData(id = "1526351", description = "Invalid language pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
 
@@ -917,7 +917,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for email."
      */
-    @TestData(id = "1526353", description = "Invalid email pattern")
+    @TestData(id = "1526353", description = "Invalid email pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
 
@@ -957,7 +957,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for promoMeta."
      */
-    @TestData(id = "1526354", description = "Invalid promoMeta pattern")
+    @TestData(id = "1526354", description = "Invalid promoMeta pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaPatternTest() {
 
@@ -995,7 +995,7 @@ public class RedeemTests extends BaseApiTest {
      * http status code = 500
      * error code = "4301"
      */
-    @TestData(id = "1526355", description = "Invalid promoMeta")
+    @TestData(id = "1526355", description = "Invalid promoMeta, expected error code = 4301")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidPromoMetaTest() {
 
@@ -1034,7 +1034,7 @@ public class RedeemTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526356", description = "Invalid app key")
+    @TestData(id = "1526356", description = "Invalid app key, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

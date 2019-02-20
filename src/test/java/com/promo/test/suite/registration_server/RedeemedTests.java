@@ -72,7 +72,7 @@ public class RedeemedTests extends BaseApiTest {
      * http status code = 200
      * promos not null or empty
      */
-    @TestData(id = "1526330", description = "Required parameters")
+    @TestData(id = "1526330", description = "Required parameters, expected status code = 200")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
 
@@ -105,7 +105,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appId"
      */
-    @TestData(id = "1526331", description = "Missing appId parameter")
+    @TestData(id = "1526331", description = "Missing appId parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -138,7 +138,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appVersion"
      */
-    @TestData(id = "1526332", description = "Missing appVersion parameter")
+    @TestData(id = "1526332", description = "Missing appVersion parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -171,7 +171,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member duid"
      */
-    @TestData(id = "1526333", description = "Missing duid parameter")
+    @TestData(id = "1526333", description = "Missing duid parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -203,7 +203,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member deviceToken"
      */
-    @TestData(id = "1526334", description = "Missing deviceToken parameter")
+    @TestData(id = "1526334", description = "Missing deviceToken parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDeviceTokenTest() {
 
@@ -237,7 +237,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526335", description = "No app key, invalid signature")
+    @TestData(id = "1526335", description = "No app key, invalid signature, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -271,7 +271,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Missing App key"
      */
-    @TestData(id = "1526336", description = "Invalid appId")
+    @TestData(id = "1526336", description = "Invalid appId, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -306,7 +306,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for deviceToken."
      */
-    @TestData(id = "1526337", description = "Invalid deviceToken pattern")
+    @TestData(id = "1526337", description = "Invalid deviceToken pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDeviceTokenPatternTest() {
 
@@ -341,7 +341,7 @@ public class RedeemedTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526339", description = "Invalid app key")
+    @TestData(id = "1526339", description = "Invalid app key, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

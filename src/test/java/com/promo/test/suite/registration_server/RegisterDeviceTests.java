@@ -30,7 +30,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526320", description = "Required parameters")
+    @TestData(id = "1526320", description = "Required parameters, expected status code = 200")
     @Test(groups = "SmokeTest")
     public void requiredParametersTest() {
 
@@ -63,7 +63,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appId"
      */
-    @TestData(id = "1526321", description = "Missing appId parameter")
+    @TestData(id = "1526321", description = "Missing appId parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -97,7 +97,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appVersion"
      */
-    @TestData(id = "1526322", description = "Missing appVersion parameter")
+    @TestData(id = "1526322", description = "Missing appVersion parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -131,7 +131,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member duid"
      */
-    @TestData(id = "1526323", description = "Missing duid parameter")
+    @TestData(id = "1526323", description = "Missing duid parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -165,7 +165,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member lang"
      */
-    @TestData(id = "1526324", description = "Missing lang parameter")
+    @TestData(id = "1526324", description = "Missing lang parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingLangTest() {
 
@@ -199,7 +199,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member model"
      */
-    @TestData(id = "1526325", description = "Missing model parameter")
+    @TestData(id = "1526325", description = "Missing model parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingModelTest() {
 
@@ -234,7 +234,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526326", description = "No app key, invalid signature")
+    @TestData(id = "1526326", description = "No app key, invalid signature, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -269,7 +269,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Missing App key"
      */
-    @TestData(id = "1526327", description = "Invalid appId")
+    @TestData(id = "1526327", description = "Invalid appId, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -305,7 +305,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for lang."
      */
-    @TestData(id = "1526328", description = "Invalid language pattern")
+    @TestData(id = "1526328", description = "Invalid language pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidLanguagePatternTest() {
 
@@ -341,7 +341,7 @@ public class RegisterDeviceTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526329", description = "Invalid app key")
+    @TestData(id = "1526329", description = "Invalid app key, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 

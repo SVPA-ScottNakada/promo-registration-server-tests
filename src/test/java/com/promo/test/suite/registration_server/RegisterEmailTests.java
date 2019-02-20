@@ -70,7 +70,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * http status code = 200
      * deviceToken not null or empty
      */
-    @TestData(id = "1526357", description = "Required parameters")
+    @TestData(id = "1526357", description = "Required parameters, expected status code = 200")
     @Test(groups = "SmokeTest")
     public void registerEmailTest() {
 
@@ -109,7 +109,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * deviceToken not null or empty
      * deviceToken for TEST_SECOND_EMAIL is different from TEST_EMAIL
      */
-    @TestData(id = "1526449", description = "Register second email to same test duid, optional optIn = true")
+    @TestData(id = "1526449", description = "Register second email to same test duid, optional optIn = true, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerSecondEmailTest() {
 
@@ -148,7 +148,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * http status code = 200
      * deviceToken not null or empty
      */
-    @TestData(id = "1526734", description = "Register email to second device")
+    @TestData(id = "1526734", description = "Register email to second duid, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void registerEmailToSecondDeviceTest() {
 
@@ -183,7 +183,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appId"
      */
-    @TestData(id = "1526358", description = "Missing appId parameter")
+    @TestData(id = "1526358", description = "Missing appId parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppIdTest() {
 
@@ -219,7 +219,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member appVersion"
      */
-    @TestData(id = "1526359", description = "Missing appVersion parameter")
+    @TestData(id = "1526359", description = "Missing appVersion parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingAppVersionTest() {
 
@@ -255,7 +255,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member duid"
      */
-    @TestData(id = "1526360", description = "Missing duid parameter")
+    @TestData(id = "1526360", description = "Missing duid parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingDuidTest() {
 
@@ -291,7 +291,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member email"
      */
-    @TestData(id = "1526361", description = "Missing email parameter")
+    @TestData(id = "1526361", description = "Missing email parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingEmailTest() {
 
@@ -328,7 +328,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid type for optIn. Expected boolean"
      */
-    @TestData(id = "1526363", description = "Invalid optIn type")
+    @TestData(id = "1526363", description = "Invalid optIn type, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidOptInTypeTest() {
 
@@ -365,7 +365,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4005"
      * debug message = "Missing member registerMeta"
      */
-    @TestData(id = "1526364", description = "Missing registerMeta parameter")
+    @TestData(id = "1526364", description = "Missing registerMeta parameter, expected error code = 4005")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void missingRegisterMetaTest() {
 
@@ -402,7 +402,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526365", description = "No app key, invalid signature")
+    @TestData(id = "1526365", description = "No app key, invalid signature, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidSignatureTest() {
 
@@ -439,7 +439,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Missing App key"
      */
-    @TestData(id = "1526366", description = "Invalid appId")
+    @TestData(id = "1526366", description = "Invalid appId, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppIdTest() {
 
@@ -476,7 +476,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4201"
      * debug message = "Device not found"
      */
-    @TestData(id = "1526733", description = "Invalid duid")
+    @TestData(id = "1526733", description = "Invalid duid, expected error code = 4201")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidDuidTest() {
 
@@ -513,7 +513,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for email."
      */
-    @TestData(id = "1526367", description = "Invalid email pattern")
+    @TestData(id = "1526367", description = "Invalid email pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidEmailPatternTest() {
 
@@ -551,7 +551,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4002"
      * debug message = "Invalid pattern for registerMeta."
      */
-    @TestData(id = "1526368", description = "Invalid registerMeta pattern")
+    @TestData(id = "1526368", description = "Invalid registerMeta pattern, expected error code = 4002")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaPatternTest() {
 
@@ -587,7 +587,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * http status code = 500
      * error code = "4301"
      */
-    @TestData(id = "1526369", description = "Invalid registerMeta ")
+    @TestData(id = "1526369", description = "Invalid registerMeta, expected error code = 4301")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidRegisterMetaTest() {
 
@@ -624,7 +624,7 @@ public class RegisterEmailTests extends BaseApiTest {
      * debug code = "4001"
      * debug message = "Invalid signature"
      */
-    @TestData(id = "1526370", description = "Invalid app key")
+    @TestData(id = "1526370", description = "Invalid app key, expected error code = 4001")
     @Test(groups = {"SmokeTest", "NegativeTest"})
     public void invalidAppKeyTest() {
 
