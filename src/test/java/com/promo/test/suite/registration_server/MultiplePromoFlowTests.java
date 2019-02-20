@@ -51,7 +51,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526450", description = "Register device")
+    @TestData(id = "1526450", description = "Register device, expected status code = 200")
     @Test(groups = "SmokeTest")
     public void registerDeviceTest() {
 
@@ -85,7 +85,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * deviceToken not null or empty
      * get test deviceToken
      */
-    @TestData(id = "1526451", description = "Register email to device")
+    @TestData(id = "1526451", description = "Register email to device, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerDeviceTest"}, alwaysRun = true)
     public void registerEmailTest() {
 
@@ -122,7 +122,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos not null or empty
      * promos list count = 0
      */
-    @TestData(id = "1526452", description = "Check empty promo list")
+    @TestData(id = "1526452", description = "Check empty promo list, expected promos list count = 0")
     @Test(groups = "SmokeTest", dependsOnMethods = {"registerEmailTest"}, alwaysRun = true)
     public void emptyRedeemedTest() {
 
@@ -156,7 +156,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526453", description = "Redeem first promo")
+    @TestData(id = "1526453", description = "Redeem first promo, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"emptyRedeemedTest"}, alwaysRun = true)
     public void reedemFirstPromoTest() {
 
@@ -192,7 +192,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * isRedeemedByUser not null or empty
      * redeemDate not null or empty
      */
-    @TestData(id = "1526454", description = "Check promo list for first redeemed promo")
+    @TestData(id = "1526454", description = "Check promo list for first redeemed promo, expected promos count = 1")
     @Test(groups = "SmokeTest", dependsOnMethods = {"reedemFirstPromoTest"}, alwaysRun = true)
     public void validateFirstRedeemedTest() {
 
@@ -228,7 +228,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526455", description = "Reedem second promo")
+    @TestData(id = "1526455", description = "Redeem second promo, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"validateFirstRedeemedTest"}, alwaysRun = true)
     public void reedemSecondPromoTest() {
 
@@ -262,7 +262,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos list count = 2
      * promoId list contains TEST_PROMOMETA_ID_02
      */
-    @TestData(id = "1526456", description = "Check promo list for second redeemed promo")
+    @TestData(id = "1526456", description = "Check promo list for second redeemed promo, expected promos count = 2")
     @Test(groups = "SmokeTest", dependsOnMethods = {"reedemSecondPromoTest"}, alwaysRun = true)
     public void validateSecondRedeemedTest() {
 
@@ -296,7 +296,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * --Expected Result
      * http status code = 200
      */
-    @TestData(id = "1526457", description = "Redeem third promo")
+    @TestData(id = "1526457", description = "Redeem third promo, expected status code = 200")
     @Test(groups = "SmokeTest", dependsOnMethods = {"validateSecondRedeemedTest"}, alwaysRun = true)
     public void reedemThirdPromoTest() {
 
@@ -330,7 +330,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos list count = 3
      * promoId list contains TEST_PROMOMETA_ID_03
      */
-    @TestData(id = "1526458", description = "Check promo list for third redeemed promo")
+    @TestData(id = "1526458", description = "Check promo list for third redeemed promo, expected promos count = 3")
     @Test(groups = "SmokeTest", dependsOnMethods = {"reedemThirdPromoTest"}, alwaysRun = true)
     public void validateThirdRedeemedTest() {
 
@@ -365,7 +365,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos not null or empty
      * promos list count = 0
      */
-    @TestData(id = "1526338", description = "redeemed - Invalid deviceToken")
+    @TestData(id = "1526338", description = "redeemed - Invalid deviceToken, expected promos list count = 0")
     @Test(groups = {"SmokeTest", "NegativeTest", "DeprecatedTest"}, dependsOnMethods = {"validateThirdRedeemedTest"},
             alwaysRun = true)
     public void invalidDeviceTokenTest() {
@@ -401,7 +401,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
      * promos not null or empty
      * promos list count = 0
      */
-    @TestData(id = "1526740", description = "redeemed - Invalid duid")
+    @TestData(id = "1526740", description = "redeemed - Invalid duid, expected promos count = 0")
     @Test(groups = {"SmokeTest", "NegativeTest"}, dependsOnMethods = {"validateThirdRedeemedTest"}, alwaysRun = true)
     public void invalidDuidTest() {
 
