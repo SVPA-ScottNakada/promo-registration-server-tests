@@ -41,7 +41,7 @@ public class RegistrationServerRequestHelper {
 
     private String requestUri = null;
 
-    private Response requestResponse = null;
+    private Response response = null;
 
     private RequestSpecification requestSpecification = null;
 
@@ -49,7 +49,7 @@ public class RegistrationServerRequestHelper {
 
     private Boolean hasHeaderSignature = true;
 
-    private JsonPath requestInJsonPath = null;
+    private JsonPath responseInJsonPath = null;
 
     private String appKeyForSignature = "";
 
@@ -125,15 +125,15 @@ public class RegistrationServerRequestHelper {
 
         log.info("\n---> send REQUEST:");
         // @formatter:off
-        requestResponse =
+        response =
                 requestSpecification.given()
                     .log().all()
                 .get(requestUri);
         // @formatter:on
-        setRequestAsJsonPath();
+        setResponseAsJsonPath();
 
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
-            requestResponse.then().log().all();
+            response.then().log().all();
         }
 
     }
@@ -147,16 +147,16 @@ public class RegistrationServerRequestHelper {
 
         log.info("\n---> send REQUEST:");
         // @formatter:off
-        requestResponse =
+        response =
                 requestSpecification.given()
                     .log().all()
                 .when()
                     .post(requestUri);
         // @formatter:on
-        setRequestAsJsonPath();
+        setResponseAsJsonPath();
 
         if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
-            requestResponse.then().log().all();
+            response.then().log().all();
         }
 
     }
@@ -190,9 +190,9 @@ public class RegistrationServerRequestHelper {
 
     }
 
-    private void setRequestAsJsonPath() {
+    private void setResponseAsJsonPath() {
         try {
-            requestInJsonPath = new JsonPath(requestResponse.then().extract().jsonPath().prettify());
+            responseInJsonPath = new JsonPath(response.then().extract().jsonPath().prettify());
         } catch (JsonPathException e) {
             log.warn("---> Response is not JSON");
         }
@@ -290,14 +290,14 @@ public class RegistrationServerRequestHelper {
     /**
      * Validates that the response's Status Code value has an expected value.
      *
-     * @param expectedCode integer for the value to verify.
+     * @param expectedStatusCode integer for the value to verify.
      */
-    public void validateResponseCode(Integer expectedCode) {
-        logToReport(MessageFormat.format("Validating response status code, expected value -{0}-", expectedCode));
+    public void validateResponseCode(Integer expectedStatusCode) {
+        logToReport(MessageFormat.format("Validating response status code, expected value -{0}-", expectedStatusCode));
         // @formatter:off
-        requestResponse.then()
+        response.then()
                 .assertThat()
-                    .statusCode(expectedCode);
+                    .statusCode(expectedStatusCode);
         // @formatter:on
 
     }
@@ -309,10 +309,10 @@ public class RegistrationServerRequestHelper {
      * @param expectedValue string for the value to verify.
      */
     public void validateValue(String pathToValidate, String expectedValue) {
-        String testValue = requestInJsonPath.getString(pathToValidate);
-        logToReport(MessageFormat.format("Validating -{0}-, expected value -{1}-, test value -{2}-", pathToValidate,
-                expectedValue, testValue));
-        assertThat(testValue, equalTo(expectedValue));
+        String actualValue = responseInJsonPath.getString(pathToValidate);
+        logToReport(MessageFormat.format("Validating -{0}-, expected value -{1}-, actual value -{2}-", pathToValidate,
+                expectedValue, actualValue));
+        assertThat(actualValue, equalTo(expectedValue));
 
     }
 
@@ -323,7 +323,7 @@ public class RegistrationServerRequestHelper {
      * @param expectedValue string for the value to verify.
      */
     public void validateValueInList(String pathToValidate, Object expectedValue) {
-        List<Object> listOfValues = requestInJsonPath.getList(pathToValidate);
+        List<Object> listOfValues = responseInJsonPath.getList(pathToValidate);
         logToReport(MessageFormat.format("Validating -{0}- list of values, expected -{1}- in list -{2}-",
                 pathToValidate, expectedValue, listOfValues));
         assertThat(listOfValues, hasItems(expectedValue));
@@ -336,11 +336,11 @@ public class RegistrationServerRequestHelper {
      * @param expectedCount integer for expected count.
      */
     public void validatePathCount(String pathToValidate, Integer expectedCount) {
-        List<Object> listOfValues = requestInJsonPath.getList(pathToValidate);
-        Integer testCount = listOfValues.size();
-        logToReport(MessageFormat.format("Validating -{0}- list, expected count -{1}-, test count -{2}-",
-                pathToValidate, expectedCount, testCount));
-        assertThat(testCount, equalTo(expectedCount));
+        List<Object> listOfValues = responseInJsonPath.getList(pathToValidate);
+        Integer actualCount = listOfValues.size();
+        logToReport(MessageFormat.format("Validating -{0}- list, expected count -{1}-, actual count -{2}-",
+                pathToValidate, expectedCount, actualCount));
+        assertThat(actualCount, equalTo(expectedCount));
     }
 
     /**
@@ -350,38 +350,37 @@ public class RegistrationServerRequestHelper {
      */
     public void validateNotNullOrEmpty(String pathToValidate) {
         logToReport(MessageFormat.format("Validating -{0}- not null or empty", pathToValidate));
-        String testValue = getPathValue(pathToValidate);
+        String actualValue = getPathValue(pathToValidate);
 
-        assertThat(testValue, notNullValue());
+        assertThat(actualValue, notNullValue());
         // When a path would have to return a null value the extract() function instead returns the string "null"
-        assertThat(testValue, not(equalTo("null")));
-        assertThat(testValue, not(isEmptyString()));
+        assertThat(actualValue, not(equalTo("null")));
+        assertThat(actualValue, not(isEmptyString()));
 
     }
 
     /**
      * Validates the debug code and message in the JSON response.
      *
-     * @param code string for the debug code.
-     * @param message string for the debug message.
+     * @param expectedCode string for the debug code.
+     * @param expectedMessage string for the debug message.
      */
-    public void validateDebug(String code, String message) {
+    public void validateDebug(String expectedCode, String expectedMessage) {
         if (isProduction()) {
             validateValue(DEBUG_PATH, null);
         } else {
-            validateValue(DEBUG_CODE_PATH, code);
-            validateValue(DEBUG_MESSAGE_PATH, message);
+            validateValue(DEBUG_CODE_PATH, expectedCode);
+            validateValue(DEBUG_MESSAGE_PATH, expectedMessage);
         }
     }
 
     public void logResult(Boolean result, String verificationMessage) {
-        if (result)
+        if (result){
             logToReport(MessageFormat.format("Verified \"{0}\"", verificationMessage));
+        }
         else {
             logErrorToReport(MessageFormat.format("Failed verification \"{0}\"", verificationMessage));
-            throw new RuntimeException(MessageFormat.format("Failed verification \"{0}\"", verificationMessage));
         }
-
     }
 
     /**
@@ -404,9 +403,9 @@ public class RegistrationServerRequestHelper {
      * @return string with the extracted value.
      */
     public String getPathValue(String pathForValue) {
-        String testValue = requestInJsonPath.getString(pathForValue);
-        logToReport(MessageFormat.format("For path -{0}- returning value -{1}-", pathForValue, testValue));
-        return testValue;
+        String actualValue = responseInJsonPath.getString(pathForValue);
+        logToReport(MessageFormat.format("For path -{0}- returning value -{1}-", pathForValue, actualValue));
+        return actualValue;
     }
 
     // --- HELPER'S GET AND SET --- ////
@@ -454,6 +453,7 @@ public class RegistrationServerRequestHelper {
 
     public void logErrorToReport(String message) {
         logToReport(message, Level.ERROR);
+        throw new RuntimeException(message);
     }
 
     private void logToReport(String message, Level logLevel) {
