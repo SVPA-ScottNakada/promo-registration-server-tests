@@ -2,12 +2,15 @@
 # ----------------------------------------------------------------------------------------------
 #                                       Api Request
 # ----------------------------------------------------------------------------------------------
-# To log all XML responses set to yes
-request.debug.log.api.call.response=
+# To log all API responses set to yes
+request.debug.log.response=
 
 # request Proxy
 request.proxy=
 request.proxy.port=
+
+# Set to yes if to add a qa_data parameter to all API calls 
+request.qa.data.parameter=
 
 # ----------------------------------------------------------------------------------------------
 #                                       TestRail Log Data
@@ -28,8 +31,8 @@ testrail.suite.registration.server.id=
 # Base URL/Hostname for Registration Server API requests. E.g., https://promo.sometesturl.com/
 registration.server.baseurl=
 
-# Set to yes if the base URL is in production
-registration.server.baseurl.is.production=
+# Set to yes if the environment is configured to give debug messages
+registration.server.environment.has.debug.errors=
 
 # ----------------------------------------------------------------------------------------------
 #                                       Common Test Data

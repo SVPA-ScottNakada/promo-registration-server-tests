@@ -306,7 +306,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
 
     private void addResultForCase(String caseId, String statusId, String comment) {
 
-        if (!ACTIVE.toLowerCase().contains("yes") || caseId.isEmpty()) {
+        if (!ACTIVE.equalsIgnoreCase("yes") || caseId.isEmpty()) {
             return;
         }
 
@@ -330,7 +330,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     private void cleanUpRunTestCaseIds() {
 
         // If no test case was executed we do nothing
-        if (!ACTIVE.toLowerCase().contains("yes") || runTestCaseIds.size() == 0) {
+        if (!ACTIVE.equalsIgnoreCase("yes") || runTestCaseIds.size() == 0) {
             return;
         }
 

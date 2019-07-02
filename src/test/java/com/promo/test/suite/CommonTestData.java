@@ -7,13 +7,16 @@ public class CommonTestData {
 
     // Api Request
 
-    public static final String DEBUG_LOG_API_CALL_RESPONSE =
-            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("request.debug.log.api.call.response");
+    public static final String DEBUG_LOG_API_RESPONSES =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("request.debug.log.response");
 
     public static final String REQUEST_PROXY = ConfigUtils.getInstance().getValueFromEnvOrConfigFile("request.proxy");
 
     public static final String REQUEST_PROXY_PORT =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("request.proxy.port");
+    
+    public static final String QA_DATA_PARAMETER =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("request.qa.data.parameter");
 
     // TestRail
 

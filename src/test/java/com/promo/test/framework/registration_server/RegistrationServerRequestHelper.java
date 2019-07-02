@@ -59,8 +59,8 @@ public class RegistrationServerRequestHelper {
 
     private Map<String, Object> requestBodyMap = new HashMap<String, Object>();
 
-    private final String REQUEST_URI_IS_PRODUCTION =
-            RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI_IS_PRODUCTION;
+    private final String ENVIRONMENT_HAS_DEBUG_ERRORS =
+            RegistrationServerTestData.REGISTRATION_SERVER_ENVIRONMENT_HAS_DEBUG_ERRORS;
 
     public RegistrationServerRequestHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
@@ -132,7 +132,7 @@ public class RegistrationServerRequestHelper {
         // @formatter:on
         setResponseAsJsonPath();
 
-        if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
+        if (CommonTestData.DEBUG_LOG_API_RESPONSES.toLowerCase().contains("yes")) {
             response.then().log().all();
         }
 
@@ -155,7 +155,7 @@ public class RegistrationServerRequestHelper {
         // @formatter:on
         setResponseAsJsonPath();
 
-        if (CommonTestData.DEBUG_LOG_API_CALL_RESPONSE.toLowerCase().contains("yes")) {
+        if (CommonTestData.DEBUG_LOG_API_RESPONSES.toLowerCase().contains("yes")) {
             response.then().log().all();
         }
 
@@ -366,7 +366,7 @@ public class RegistrationServerRequestHelper {
      * @param expectedMessage string for the debug message.
      */
     public void validateDebug(String expectedCode, String expectedMessage) {
-        if (isProduction()) {
+        if (hasDebugErrors()) {
             validateValue(DEBUG_PATH, null);
         } else {
             validateValue(DEBUG_CODE_PATH, expectedCode);
@@ -383,12 +383,8 @@ public class RegistrationServerRequestHelper {
         }
     }
 
-    /**
-     * Returns true if the configuration property registration.server.baseurl.is.production is set to "yes",
-     * anything else returns false
-     */
-    public Boolean isProduction() {
-        if (REQUEST_URI_IS_PRODUCTION.equalsIgnoreCase("yes")) {
+    private Boolean hasDebugErrors() {
+        if (ENVIRONMENT_HAS_DEBUG_ERRORS.equalsIgnoreCase("yes")) {
             return true;
         } else {
             return false;
