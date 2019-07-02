@@ -3,7 +3,7 @@ package com.promo.test.framework.registration_server;
 
 import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
-public class DeleteDeviceHelper extends RegistrationServerRequestHelper {
+public class DeleteDeviceHelper extends RegistrationServerApiCallHelper {
 
     private static final String API_COMMAND = "register/delete-device";
 

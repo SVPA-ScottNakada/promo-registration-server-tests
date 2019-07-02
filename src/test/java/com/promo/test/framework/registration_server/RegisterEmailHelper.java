@@ -3,7 +3,7 @@ package com.promo.test.framework.registration_server;
 
 import com.promo.test.suite.registration_server.RegistrationServerTestData;
 
-public class RegisterEmailHelper extends RegistrationServerRequestHelper {
+public class RegisterEmailHelper extends RegistrationServerApiCallHelper {
 
     private static final String API_COMMAND = "register/email";
 

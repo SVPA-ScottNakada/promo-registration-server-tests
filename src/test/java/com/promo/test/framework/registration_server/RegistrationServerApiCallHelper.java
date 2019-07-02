@@ -35,7 +35,7 @@ import io.restassured.specification.RequestSpecification;
 /**
  * @author dalvarado
  */
-public class RegistrationServerRequestHelper {
+public class RegistrationServerApiCallHelper {
 
     protected Logger log = LogManager.getLogger(getClass());
 
@@ -62,11 +62,11 @@ public class RegistrationServerRequestHelper {
     private final String ENVIRONMENT_HAS_DEBUG_ERRORS =
             RegistrationServerTestData.REGISTRATION_SERVER_ENVIRONMENT_HAS_DEBUG_ERRORS;
 
-    public RegistrationServerRequestHelper() {
+    public RegistrationServerApiCallHelper() {
         this(RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI);
     }
 
-    public RegistrationServerRequestHelper(String newUri) {
+    public RegistrationServerApiCallHelper(String newUri) {
         requestUri = newUri;
         RestAssured.useRelaxedHTTPSValidation();
         if (!CommonTestData.REQUEST_PROXY.isEmpty() && !CommonTestData.REQUEST_PROXY_PORT.isEmpty()) {
