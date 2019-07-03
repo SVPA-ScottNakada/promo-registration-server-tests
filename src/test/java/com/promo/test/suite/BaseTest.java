@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 
 public class BaseTest {
-    
+
     static {
         System.setProperty("log4j.configurationFile", "var/secure/Log4j.properties");
     }
@@ -17,4 +17,5 @@ public class BaseTest {
     public static void setUpBeforeClass() {
 
     }
+
 }
