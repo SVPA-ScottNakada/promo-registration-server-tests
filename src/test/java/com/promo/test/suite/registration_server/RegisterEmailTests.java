@@ -32,7 +32,7 @@ public class RegisterEmailTests extends BaseApiTest {
     public void makeSureDeviceIsRegistered() {
         // make Sure Device Is Registered
         RegisterDeviceHelper regDev = new RegisterDeviceHelper();
-        regDev.logToReport("Make sure Device is registered");
+        regDev.log("Make sure Device is registered");
         regDev.addApplicationId(TEST_APP);
         regDev.addApplicationVersion("0.1");
         regDev.addDeviceUserId(TEST_DUID);
@@ -44,7 +44,7 @@ public class RegisterEmailTests extends BaseApiTest {
 
         // make Sure Second Device Is Registered
         RegisterDeviceHelper regDev02 = new RegisterDeviceHelper();
-        regDev02.logToReport("Make sure second Device is registered");
+        regDev02.log("Make sure second Device is registered");
         regDev02.addApplicationId(TEST_APP);
         regDev02.addApplicationVersion("0.1");
         regDev02.addDeviceUserId(TEST_DUID_SECOND);
@@ -86,7 +86,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.validateResponseCodeOk();
         regEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
 
-        regEmail.logToReport("Saving value for the first deviceToken");
+        regEmail.log("Saving value for the first deviceToken");
         deviceToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
 
     }
@@ -126,7 +126,7 @@ public class RegisterEmailTests extends BaseApiTest {
         reg2ndEmail.validateResponseCodeOk();
         reg2ndEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
 
-        reg2ndEmail.logToReport("Saving value for the second deviceToken");
+        reg2ndEmail.log("Saving value for the second deviceToken");
         String secondDeviceToken = reg2ndEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
         Boolean differentTokens = !secondDeviceToken.equals(deviceToken);
         reg2ndEmail.logResult(differentTokens, "Second deviceToken is different from the first -" + deviceToken + "-");
@@ -196,9 +196,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member appId");
+        regEmail.validateDebugError("4005", "Missing member appId");
 
     }
 
@@ -232,9 +232,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member appVersion");
+        regEmail.validateDebugError("4005", "Missing member appVersion");
 
     }
 
@@ -268,9 +268,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member duid");
+        regEmail.validateDebugError("4005", "Missing member duid");
 
     }
 
@@ -304,9 +304,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member email");
+        regEmail.validateDebugError("4005", "Missing member email");
 
     }
 
@@ -337,14 +337,14 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.addApplicationVersion("0.1");
         regEmail.addDeviceUserId(TEST_DUID);
         regEmail.addEmail(TEST_EMAIL);
-        regEmail.addStringAsRequestBody("optIn", "true");
+        regEmail.addStringAsBodyParameter("optIn", "true");
         regEmail.addRegisterMeta(TEST_REGMETA);
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4002");
-        regEmail.validateDebug("4002", "Invalid type for optIn. Expected boolean");
+        regEmail.validateDebugError("4002", "Invalid type for optIn. Expected boolean");
 
     }
 
@@ -378,9 +378,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterEmailHelper.ERROR_CODE_PATH, "4005");
-        regEmail.validateDebug("4005", "Missing member registerMeta");
+        regEmail.validateDebugError("4005", "Missing member registerMeta");
 
     }
 
@@ -415,9 +415,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.addRegisterMeta(TEST_REGMETA);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regEmail.validateDebug("4001", "Invalid signature");
+        regEmail.validateDebugError("4001", "Invalid signature");
 
     }
 
@@ -453,9 +453,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regEmail.validateDebug("4001", "Missing App key");
+        regEmail.validateDebugError("4001", "Missing App key");
 
     }
 
@@ -489,9 +489,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_BAD_REQUEST);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4201");
-        regEmail.validateDebug("4201", "Device not found");
+        regEmail.validateDebugError("4201", "Device not found");
 
     }
 
@@ -527,9 +527,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        regEmail.validateDebug("4002", "Invalid pattern for email.");
+        regEmail.validateDebugError("4002", "Invalid pattern for email.");
 
     }
 
@@ -565,9 +565,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        regEmail.validateDebug("4002", "Invalid pattern for registerMeta.");
+        regEmail.validateDebugError("4002", "Invalid pattern for registerMeta.");
 
     }
 
@@ -601,7 +601,7 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey(TEST_APP_KEY);
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4301");
 
     }
@@ -638,9 +638,9 @@ public class RegisterEmailTests extends BaseApiTest {
         regEmail.setAppKey("ThisShouldNotWork");
         regEmail.send();
 
-        regEmail.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regEmail.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regEmail.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regEmail.validateDebug("4001", "Invalid signature");
+        regEmail.validateDebugError("4001", "Invalid signature");
 
     }
 

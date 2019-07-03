@@ -55,7 +55,7 @@ public class RedeemTests extends BaseApiTest {
     public void registerDeviceAndEmail() {
         // make Sure Device Is Registered
         RegisterDeviceHelper regDev = new RegisterDeviceHelper();
-        regDev.logToReport("Make sure Device is registered");
+        regDev.log("Make sure Device is registered");
         regDev.addApplicationId(TEST_APP);
         regDev.addApplicationVersion("0.1");
         regDev.addDeviceUserId(TEST_DUID);
@@ -67,7 +67,7 @@ public class RedeemTests extends BaseApiTest {
 
         // make Sure Second Device Is Registered
         RegisterDeviceHelper regDev02 = new RegisterDeviceHelper();
-        regDev02.logToReport("Make sure second Device is registered");
+        regDev02.log("Make sure second Device is registered");
         regDev02.addApplicationId(TEST_APP);
         regDev02.addApplicationVersion("0.1");
         regDev02.addDeviceUserId(TEST_DUID_SECOND);
@@ -79,7 +79,7 @@ public class RedeemTests extends BaseApiTest {
 
         // make Sure First Email Is Registered to First Device
         RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.logToReport("Make sure Email is registered");
+        regEmail.log("Make sure Email is registered");
         regEmail.addApplicationId(TEST_APP);
         regEmail.addApplicationVersion("0.1");
         regEmail.addDeviceUserId(TEST_DUID);
@@ -92,7 +92,7 @@ public class RedeemTests extends BaseApiTest {
 
         // make Sure First Email Is Registered to Second Device
         RegisterEmailHelper regEmail2ndDev = new RegisterEmailHelper();
-        regEmail2ndDev.logToReport("Make sure Email is registered to second device");
+        regEmail2ndDev.log("Make sure Email is registered to second device");
         regEmail2ndDev.addApplicationId(TEST_APP);
         regEmail2ndDev.addApplicationVersion("0.1");
         regEmail2ndDev.addDeviceUserId(TEST_DUID_SECOND);
@@ -301,9 +301,9 @@ public class RedeemTests extends BaseApiTest {
         redeemWith2ndEmail.setAppKey(TEST_APP_KEY);
         redeemWith2ndEmail.send();
 
-        redeemWith2ndEmail.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeemWith2ndEmail.validateResponseStatusCode(HttpStatus.SC_BAD_REQUEST);
         redeemWith2ndEmail.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
-        redeemWith2ndEmail.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
+        redeemWith2ndEmail.validateDebugError("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
 
     }
 
@@ -427,9 +427,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateResponseStatusCode(HttpStatus.SC_BAD_REQUEST);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4501");
-        redeem.validateDebug("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
+        redeem.validateDebugError("4501", "Promo redeemed already. PromoId: '" + TEST_PROMOMETA_NAME_01 + "'");
 
     }
 
@@ -467,9 +467,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateResponseStatusCode(HttpStatus.SC_BAD_REQUEST);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4202");
-        redeem.validateDebug("4202", "Device email not registered");
+        redeem.validateDebugError("4202", "Device email not registered");
 
     }
 
@@ -505,9 +505,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member appId");
+        redeem.validateDebugError("4005", "Missing member appId");
 
     }
 
@@ -543,9 +543,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member appVersion");
+        redeem.validateDebugError("4005", "Missing member appVersion");
 
     }
 
@@ -581,9 +581,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member duid");
+        redeem.validateDebugError("4005", "Missing member duid");
 
     }
 
@@ -619,9 +619,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member lang");
+        redeem.validateDebugError("4005", "Missing member lang");
 
     }
 
@@ -657,9 +657,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member model");
+        redeem.validateDebugError("4005", "Missing member model");
 
     }
 
@@ -695,9 +695,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member email");
+        redeem.validateDebugError("4005", "Missing member email");
 
     }
 
@@ -733,9 +733,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4005");
-        redeem.validateDebug("4005", "Missing member promoMeta");
+        redeem.validateDebugError("4005", "Missing member promoMeta");
 
     }
 
@@ -772,9 +772,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.addPromoMeta(TEST_PROMOMETA_URL_01);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeem.validateDebug("4001", "Invalid signature");
+        redeem.validateDebugError("4001", "Invalid signature");
 
     }
 
@@ -812,9 +812,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeem.validateDebug("4001", "Missing App key");
+        redeem.validateDebugError("4001", "Missing App key");
 
     }
 
@@ -852,9 +852,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_BAD_REQUEST);
+        redeem.validateResponseStatusCode(HttpStatus.SC_BAD_REQUEST);
         redeem.validateValue(RedeemHelper.ERROR_CODE_PATH, "4202");
-        redeem.validateDebug("4202", "Device email not registered");
+        redeem.validateDebugError("4202", "Device email not registered");
 
     }
 
@@ -892,9 +892,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        redeem.validateDebug("4002", "Invalid pattern for lang.");
+        redeem.validateDebugError("4002", "Invalid pattern for lang.");
 
     }
 
@@ -932,9 +932,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        redeem.validateDebug("4002", "Invalid pattern for email.");
+        redeem.validateDebugError("4002", "Invalid pattern for email.");
 
     }
 
@@ -972,9 +972,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        redeem.validateDebug("4002", "Invalid pattern for promoMeta.");
+        redeem.validateDebugError("4002", "Invalid pattern for promoMeta.");
 
     }
 
@@ -1010,7 +1010,7 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey(TEST_APP_KEY);
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        redeem.validateResponseStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4301");
 
     }
@@ -1049,9 +1049,9 @@ public class RedeemTests extends BaseApiTest {
         redeem.setAppKey("ThisShouldNotWork");
         redeem.send();
 
-        redeem.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeem.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeem.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeem.validateDebug("4001", "Invalid signature");
+        redeem.validateDebugError("4001", "Invalid signature");
 
     }
 }

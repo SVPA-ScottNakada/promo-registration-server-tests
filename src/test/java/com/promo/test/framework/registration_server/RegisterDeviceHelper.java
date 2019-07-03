@@ -24,23 +24,23 @@ public class RegisterDeviceHelper extends RegistrationServerApiCallHelper {
     // Add Parameters
 
     public void addApplicationId(String value) {
-        addStringAsRequestBody("appId", value);
+        addStringAsBodyParameter("appId", value);
     }
 
     public void addApplicationVersion(String value) {
-        addStringAsRequestBody("appVersion", value);
+        addStringAsBodyParameter("appVersion", value);
     }
 
     public void addDeviceUserId(String value) {
-        addStringAsRequestBody("duid", value);
+        addStringAsBodyParameter("duid", value);
     }
 
     public void addLanguage(String value) {
-        addStringAsRequestBody("lang", value);
+        addStringAsBodyParameter("lang", value);
     }
 
     public void addModel(String value) {
-        addStringAsRequestBody("model", value);
+        addStringAsBodyParameter("model", value);
     }
 
 }

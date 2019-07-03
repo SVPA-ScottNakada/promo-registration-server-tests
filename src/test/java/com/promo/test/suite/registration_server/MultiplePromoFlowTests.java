@@ -102,7 +102,7 @@ public class MultiplePromoFlowTests extends BaseApiTest {
         regEmail.validateResponseCodeOk();
         regEmail.validateNotNullOrEmpty(RegisterEmailHelper.DEVICE_TOKEN);
 
-        regEmail.logToReport("Saving value for the first deviceToken");
+        regEmail.log("Saving value for the first deviceToken");
         deviceToken = regEmail.getPathValue(RegisterEmailHelper.DEVICE_TOKEN);
 
     }

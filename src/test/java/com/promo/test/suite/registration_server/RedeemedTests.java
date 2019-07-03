@@ -29,7 +29,7 @@ public class RedeemedTests extends BaseApiTest {
     public void setDevToken() {
         // make Sure Device Is Registered
         RegisterDeviceHelper regDev = new RegisterDeviceHelper();
-        regDev.logToReport("Make sure Device is registered");
+        regDev.log("Make sure Device is registered");
         regDev.addApplicationId(TEST_APP);
         regDev.addApplicationVersion("0.1");
         regDev.addDeviceUserId(TEST_DUID);
@@ -41,7 +41,7 @@ public class RedeemedTests extends BaseApiTest {
 
         // make Sure Email Is Registered
         RegisterEmailHelper regEmail = new RegisterEmailHelper();
-        regEmail.logToReport("Make sure Email is registered");
+        regEmail.log("Make sure Email is registered");
         regEmail.addApplicationId(TEST_APP);
         regEmail.addApplicationVersion("0.1");
         regEmail.addDeviceUserId(TEST_DUID);
@@ -116,9 +116,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
-        redeemed.validateDebug("4005", "Missing member appId");
+        redeemed.validateDebugError("4005", "Missing member appId");
 
     }
 
@@ -149,9 +149,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
-        redeemed.validateDebug("4005", "Missing member appVersion");
+        redeemed.validateDebugError("4005", "Missing member appVersion");
 
     }
 
@@ -182,9 +182,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
-        redeemed.validateDebug("4005", "Missing member duid");
+        redeemed.validateDebugError("4005", "Missing member duid");
 
     }
 
@@ -214,9 +214,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RedeemedHelper.ERROR_CODE_PATH, "4005");
-        redeemed.validateDebug("4005", "Missing member deviceToken");
+        redeemed.validateDebugError("4005", "Missing member deviceToken");
 
     }
 
@@ -248,9 +248,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.addDeviceToken(testDevToken);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeemed.validateDebug("4001", "Invalid signature");
+        redeemed.validateDebugError("4001", "Invalid signature");
 
     }
 
@@ -283,9 +283,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeemed.validateDebug("4001", "Missing App key");
+        redeemed.validateDebugError("4001", "Missing App key");
 
     }
 
@@ -318,9 +318,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey(TEST_APP_KEY);
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        redeemed.validateDebug("4002", "Invalid pattern for deviceToken.");
+        redeemed.validateDebugError("4002", "Invalid pattern for deviceToken.");
 
     }
 
@@ -353,9 +353,9 @@ public class RedeemedTests extends BaseApiTest {
         redeemed.setAppKey("ThisShouldNotWork");
         redeemed.send();
 
-        redeemed.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        redeemed.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         redeemed.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        redeemed.validateDebug("4001", "Invalid signature");
+        redeemed.validateDebugError("4001", "Invalid signature");
 
     }
 

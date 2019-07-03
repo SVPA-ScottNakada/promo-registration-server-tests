@@ -75,9 +75,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member appId");
+        regDev.validateDebugError("4005", "Missing member appId");
 
     }
 
@@ -109,9 +109,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member appVersion");
+        regDev.validateDebugError("4005", "Missing member appVersion");
 
     }
 
@@ -143,9 +143,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member duid");
+        regDev.validateDebugError("4005", "Missing member duid");
 
     }
 
@@ -177,9 +177,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member lang");
+        regDev.validateDebugError("4005", "Missing member lang");
 
     }
 
@@ -211,9 +211,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4005");
-        regDev.validateDebug("4005", "Missing member model");
+        regDev.validateDebugError("4005", "Missing member model");
 
     }
 
@@ -246,9 +246,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.addModel("some-tv");
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regDev.validateDebug("4001", "Invalid signature");
+        regDev.validateDebugError("4001", "Invalid signature");
 
     }
 
@@ -282,9 +282,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regDev.validateDebug("4001", "Missing App key");
+        regDev.validateDebugError("4001", "Missing App key");
 
     }
 
@@ -318,9 +318,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey(TEST_APP_KEY);
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4002");
-        regDev.validateDebug("4002", "Invalid pattern for lang.");
+        regDev.validateDebugError("4002", "Invalid pattern for lang.");
 
     }
 
@@ -354,9 +354,9 @@ public class RegisterDeviceTests extends BaseApiTest {
         regDev.setAppKey("ThisShouldNotWork");
         regDev.send();
 
-        regDev.validateResponseCode(HttpStatus.SC_UNAUTHORIZED);
+        regDev.validateResponseStatusCode(HttpStatus.SC_UNAUTHORIZED);
         regDev.validateValue(RegisterDeviceHelper.ERROR_CODE_PATH, "4001");
-        regDev.validateDebug("4001", "Invalid signature");
+        regDev.validateDebugError("4001", "Invalid signature");
 
     }
 
