@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import io.restassured.path.json.JsonPath;
 import io.restassured.path.json.exception.JsonPathException;
 
@@ -22,6 +24,7 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
 
     public JsonApiCallHelper(String newUri) {
         super(newUri);
+        RestAssured.defaultParser = Parser.JSON;
         setContentType("application/json");
     }
 
