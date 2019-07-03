@@ -63,6 +63,9 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
 
     // --- VALIDATIONS --- ////
 
+    // TODO: Rework functions that use responseInJsonPath.getList, currently works for what we need, but if
+    // the response is not in the correct format it can throw casting exceptions
+
     /**
      * Validates that a path has an expected value in the response.
      *

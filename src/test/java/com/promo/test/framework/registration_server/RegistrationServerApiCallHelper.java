@@ -51,7 +51,7 @@ public class RegistrationServerApiCallHelper extends JsonApiCallHelper {
 
     private void addBodyStringAndHeaderSignature() {
         String bodyString = "";
-        
+
         if (!requestParameterMap.isEmpty()) {
             bodyString = simpleMapToUrlParameterString(requestParameterMap);
         }
@@ -124,7 +124,7 @@ public class RegistrationServerApiCallHelper extends JsonApiCallHelper {
             validateValue(DEBUG_CODE_PATH, expectedCode);
             validateValue(DEBUG_MESSAGE_PATH, expectedMessage);
         } else {
-            validatePathCount(DEBUG_PATH, 0);
+            validateValue(DEBUG_PATH, null);
         }
     }
 
