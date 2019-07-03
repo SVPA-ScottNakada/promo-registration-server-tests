@@ -76,6 +76,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     public static final String TEST_RAIL_RESULT_FAILED = "5";
 
     private static List<String> runTestCaseIds = new ArrayList<String>();
+    
+    private static final Integer MAX_NUMBER_OF_RECORDS_RETURNED_BY_TESTRAIL = 250;
 
     public TestRailRequestHelper() {
         RestAssured.useRelaxedHTTPSValidation();
@@ -84,6 +86,7 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
     // This belongs to ISuiteListener and will execute before the Suite start
     @Override
     public void onStart(ISuite arg0) {
+        log.info(MessageFormat.format("\n >>>>>>>> TEST SUITE <<<<<<<< \n", arg0.getName()));
         suitName = arg0.getXmlSuite().getName();
     }
 
@@ -257,12 +260,14 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         testRailRunName = "Automated " + suitName + " run for Registration Server (ID: " + PROJECT_ID + ", Suite "
                 + SUITE_ID + ") at " + testRailRunCreationTime;
 
+        String testRailRunDescription = "Base Uri: " + RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI;
+        
         // @formatter:off
         String jsonAsString = 
                 "{" 
                         + "\"suite_id\": " + SUITE_ID + "," 
                         + "\"name\": \"" + testRailRunName + "\","
-                        + "\"description\": \"" + "Base Uri: " + RegistrationServerTestData.REGISTRATION_SERVER_BASE_URI + "\","
+                        + "\"description\": \"" + "Base Uri: " + testRailRunDescription + "\","
                         + "\"assignedto_id\": " + USER_ID + "," 
                         + "\"include_all\": true" 
                 + "}";
@@ -326,6 +331,37 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
         runTestCaseIds.add(caseId);
 
     }
+    
+    public Integer getResultRunIdCount() {
+        // get_results_for_run, helps us get the test Run id's in the latest test run
+        // these ids are not the same as the test case's ids
+        Integer totalNumberOfRecordsReturned = 0;
+        List<String> totalReturnedIdList = new ArrayList<String>();
+        Boolean getMoreIds = false;
+
+        do {
+            sendGetRequest(
+                    "get_results_for_run/" + testRailRunId + "&offset=" + totalNumberOfRecordsReturned.toString());
+
+            List<String> returnedRunIdList = getJsonPathStringList("test_id");
+            Integer returnedRunIdCount = returnedRunIdList.size();
+
+            totalReturnedIdList.addAll(returnedRunIdList);
+            totalNumberOfRecordsReturned = totalNumberOfRecordsReturned + returnedRunIdCount;
+
+            if (MAX_NUMBER_OF_RECORDS_RETURNED_BY_TESTRAIL.equals(returnedRunIdCount)) {
+                getMoreIds = true;
+            } else {
+                getMoreIds = false;
+            }
+        } while (getMoreIds);
+
+        // We remove duplicate test case's results
+        Set<String> hs1 = new LinkedHashSet<>(totalReturnedIdList);
+        List<String> noDuplicateResultsRunIds = new ArrayList<>(hs1);
+
+        return noDuplicateResultsRunIds.size();
+    }
 
     private void cleanUpRunTestCaseIds() {
 
@@ -344,18 +380,8 @@ public class TestRailRequestHelper implements ITestListener, ISuiteListener, IIn
             return;
         }
 
-        // get_results_for_run, helps us get the test Run id's in the latest test run
-        // these ids are not the same as the test case's ids
-        String getString = "get_results_for_run/" + testRailRunId;
-        sendGetRequest(getString);
-        List<String> testResultsRunIds = getJsonPathStringList("test_id");
-
-        // We remove duplicate test case's results
-        Set<String> hs1 = new LinkedHashSet<>(testResultsRunIds);
-        List<String> noDuplicateResultsRunIds = new ArrayList<>(hs1);
-
         // We only clean up the Run if the number of test results match the number of test cases executed
-        Integer totalTestRailRunResults = noDuplicateResultsRunIds.size();
+        Integer totalTestRailRunResults = getResultRunIdCount();
         Integer totalSuiteExecutedTestCases = runTestCaseIds.size();
         if (totalTestRailRunResults != totalSuiteExecutedTestCases) {
             log.warn("---> Number of test cases didn't match in clean up: TestRail -" + totalTestRailRunResults
