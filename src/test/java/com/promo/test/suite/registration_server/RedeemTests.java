@@ -223,7 +223,7 @@ public class RedeemTests extends BaseApiTest {
         redeemed.send();
 
         redeemed.validateResponseCodeOk();
-        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validatePathListCount(RedeemedHelper.PROMOS, 1);
         redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_02);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
@@ -342,7 +342,7 @@ public class RedeemTests extends BaseApiTest {
         redeemed.send();
 
         redeemed.validateResponseCodeOk();
-        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validatePathListCount(RedeemedHelper.PROMOS, 1);
         redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_01);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, true);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);
@@ -385,7 +385,7 @@ public class RedeemTests extends BaseApiTest {
         redeemed.send();
 
         redeemed.validateResponseCodeOk();
-        redeemed.validatePathCount(RedeemedHelper.PROMOS, 1);
+        redeemed.validatePathListCount(RedeemedHelper.PROMOS, 1);
         redeemed.validateValueInList(RedeemedHelper.PROMO_ID, TEST_PROMOMETA_NAME_01);
         redeemed.validateValueInList(RedeemedHelper.IS_REDEEMED_BY_USER, false);
         redeemed.validateNotNullOrEmpty(RedeemedHelper.REDEEM_DATE);

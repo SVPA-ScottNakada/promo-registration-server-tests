@@ -4,11 +4,12 @@ package com.promo.test.framework;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,17 +55,81 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
         // The content type could have been changed, so we only extract if its still Json
         if (getContentType().equals("application/json")) {
             try {
-                responseInJsonPath = new JsonPath(response.then().extract().jsonPath().prettify());
+                responseInJsonPath = new JsonPath(response.body().asString());
             } catch (JsonPathException e) {
                 log.warn("---> Response is not JSON");
             }
         }
     }
 
-    // --- VALIDATIONS --- ////
+    // --- RESPONSE'S PATH INFO METHODS --- ////
+    /**
+     * Returns the value of a path in the response.
+     * If it doesn't find the path it returns an empty string.
+     *
+     * @param pathForValue string for the path.
+     * @return string with the extracted value.
+     */
+    public String getPathValue(String pathForValue) {
+        return getPathValue(pathForValue, false, true);
+    }
 
-    // TODO: Rework functions that use responseInJsonPath.getList, currently works for what we need, but if
-    // the response is not in the correct format it can throw casting exceptions
+    /**
+     * Returns the value of a path in the response.
+     * 
+     * @param pathForValue string for the path.
+     * @param returnNull if set to false function will return an empty string instead of null.
+     * @param logMessage set to true if a log message is needed.
+     * @return
+     */
+    protected String getPathValue(String pathForValue, Boolean returnNull, Boolean logMessage) {
+        String actualValue = responseInJsonPath.getString(pathForValue);
+        if (null == actualValue) {
+            if (!returnNull) {
+                actualValue = "";
+            }
+        }
+        if (logMessage) {
+            logToReport(MessageFormat.format("For path -{0}- returning value -{1}-", pathForValue, actualValue));
+        }
+        return actualValue;
+    }
+
+    /**
+     * Returns a path as a list.
+     * If the the path doesn't contain a list it will return a list containing one item with the getString value.
+     * If the path isn't found an empty list will be returned instead.
+     * 
+     * @param pathForList
+     * @return
+     */
+    private List<Object> getListFromJsonPath(String pathForList) {
+        List<Object> listToReturn = new ArrayList<Object>();
+
+        // First we attempt the getString to check if the path is found
+        String getStringFromJsonPath = getPathValue(pathForList, true, false);
+        if (null == getStringFromJsonPath) {
+            // We return an empty list
+            log.debug("---> Couldnt find path for list -" + pathForList + "-");
+            return listToReturn;
+        }
+
+        // Next we try to extract a list from the path
+        try {
+            List<Object> actualGetListFromJsonPath = responseInJsonPath.getList(pathForList);
+            // JsonPath has a bad habit of adding null values
+            // for list paths were the parent node exists but the end node doesn't
+            actualGetListFromJsonPath.removeAll(Collections.singleton(null));
+            listToReturn = actualGetListFromJsonPath;
+
+        } catch (ClassCastException e) {
+            // If the getList was unsuccessful we make the getStringFromJsonPath the only value in the list
+            listToReturn.add(getStringFromJsonPath);
+        }
+        return listToReturn;
+    }
+
+    // --- VALIDATIONS --- ////
 
     /**
      * Validates that a path has an expected value in the response.
@@ -73,11 +138,10 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
      * @param expectedValue string for the value to verify.
      */
     public void validateValue(String pathToValidate, String expectedValue) {
-        String actualValue = responseInJsonPath.getString(pathToValidate);
+        String actualValue = getPathValue(pathToValidate, true, false);
         logToReport(MessageFormat.format("Validating -{0}-, expected value -{1}-, actual value -{2}-", pathToValidate,
                 expectedValue, actualValue));
         assertThat(actualValue, equalTo(expectedValue));
-
     }
 
     /**
@@ -87,23 +151,23 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
      * @param expectedValue string for the value to verify.
      */
     public void validateValueInList(String pathToValidate, Object expectedValue) {
-        List<Object> listOfValues = responseInJsonPath.getList(pathToValidate);
+        List<Object> listOfValues = getListFromJsonPath(pathToValidate);
         logToReport(MessageFormat.format("Validating -{0}- list of values, expected -{1}- in list -{2}-",
                 pathToValidate, expectedValue, listOfValues));
         assertThat(listOfValues, hasItems(expectedValue));
     }
 
     /**
-     * Validates number of instances of a path in the response.
+     * Given a path in the response, validates the number of objects/instances found.
      *
      * @param pathToValidate string for the path to validate.
      * @param expectedCount integer for expected count.
      */
-    public void validatePathCount(String pathToValidate, Integer expectedCount) {
-        List<Object> listOfValues = responseInJsonPath.getList(pathToValidate);
+    public void validatePathListCount(String pathToValidate, Integer expectedCount) {
+        List<Object> listOfValues = getListFromJsonPath(pathToValidate);
         Integer actualCount = listOfValues.size();
-        logToReport(MessageFormat.format("Validating -{0}- list, expected count -{1}-, actual count -{2}-",
-                pathToValidate, expectedCount, actualCount));
+        logToReport(MessageFormat.format("Validating -{0}- list count, expected -{1}-, actual -{2}-", pathToValidate,
+                expectedCount, actualCount));
         assertThat(actualCount, equalTo(expectedCount));
     }
 
@@ -114,26 +178,8 @@ public class JsonApiCallHelper extends BaseApiCallHelper {
      */
     public void validateNotNullOrEmpty(String pathToValidate) {
         logToReport(MessageFormat.format("Validating -{0}- not null or empty", pathToValidate));
-        String actualValue = getPathValue(pathToValidate);
-
-        assertThat(actualValue, notNullValue());
-        // When a path would have to return a null value the extract() function instead returns the string "null"
-        assertThat(actualValue, not(equalTo("null")));
-        assertThat(actualValue, not(isEmptyString()));
-
-    }
-
-    // --- RESPONSE'S PATH INFO METHODS --- ////
-    /**
-     * Returns the value of a path in the response.
-     *
-     * @param pathForValue string for the path.
-     * @return string with the extracted value.
-     */
-    public String getPathValue(String pathForValue) {
-        String actualValue = responseInJsonPath.getString(pathForValue);
-        logToReport(MessageFormat.format("For path -{0}- returning value -{1}-", pathForValue, actualValue));
-        return actualValue;
+        String actualValue = getPathValue(pathToValidate, true, true);
+        assertThat(actualValue, not(isEmptyOrNullString()));
     }
 
     // --- MAP TO JSON STRING--- ////
