@@ -15,6 +15,14 @@ public class RegistrationServerTestData {
     public static final String REGISTRATION_SERVER_ENVIRONMENT_HAS_DEBUG_ERRORS =
             ConfigUtils.getInstance().getValueFromEnvOrConfigFile("registration.server.environment.has.debug.errors");
 
+    // TEST RAIL
+
+    public static final String TESTRAIL_PROMO_PROJECT_ID =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("testrail.project.id");
+
+    public static final String TESTRAIL_SUITE_REGISTRATION_SERVER_ID =
+            ConfigUtils.getInstance().getValueFromEnvOrConfigFile("testrail.suite.registration.server.id");
+
     // Test Data
 
     // DUID

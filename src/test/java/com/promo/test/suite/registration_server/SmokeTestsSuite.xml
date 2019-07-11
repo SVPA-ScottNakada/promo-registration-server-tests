@@ -49,6 +49,6 @@
 
 	<listeners>
 		<listener
-			class-name="com.promo.test.framework.registration_server.TestRailRequestHelper" />
+			class-name="com.promo.test.framework.registration_server.RegistrationServerTestRailHelper" />
 	</listeners>
 </suite>
